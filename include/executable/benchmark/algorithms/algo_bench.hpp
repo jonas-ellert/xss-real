@@ -1,22 +1,22 @@
 //  Copyright (c) 2019 Jonas Ellert
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
+//  of this software and associated documentation files (the "Software"), to
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
 //
-//  The above copyright notice and this permission notice shall be included in all
-//  copies or substantial portions of the Software.
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
 //
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
 
 #pragma once
 
@@ -98,72 +98,68 @@ void run_sdsl_generic(const get_compare_type get_compare,
   vector_no_front.assign(vector.begin() + 1, vector.end());
 
   const auto func = [&]() {
-      auto compare = get_compare(vector_no_front.data(), n);
-      std::vector<unsigned int> result(n);
-      sdsl::algorithm::calculate_nss(compare, result);
+    auto compare = get_compare(vector_no_front.data(), n);
+    std::vector<unsigned int> result(n);
+    sdsl::algorithm::calculate_nss(compare, result);
   };
 
   const auto post = [&]() {
-      vector_no_front.assign(vector.begin() + 1, vector.end());
+    vector_no_front.assign(vector.begin() + 1, vector.end());
   };
 
-  run_generic<output_types::array32>("sdsl-lyn-" + sdsl_info, additional_info, func,
-                                     post, vector.size() - 2, runs);
+  run_generic<output_types::array32>("sdsl-lyn-" + sdsl_info, additional_info,
+                                     func, post, vector.size() - 2, runs);
 }
 
 template <typename char_t>
 void run_sdsl_prezza(const std::vector<char_t>& vector,
                      const uint64_t runs,
                      const std::string additional_info) {
-  const auto get_compare = [](char_t * text, const uint64_t n) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
     return lce_prezza<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "prezza");
 }
 
-
 template <typename char_t>
 void run_sdsl_prezza1k(const std::vector<char_t>& vector,
-                     const uint64_t runs,
-                     const std::string additional_info) {
-  const auto get_compare = [](char_t * text, const uint64_t n) {
-      return lce_prezza1k<char_t>::get_suffix_compare(text, n);
+                       const uint64_t runs,
+                       const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_prezza1k<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "prezza-1k");
 }
 
-
 template <typename char_t>
 void run_sdsl_rk(const std::vector<char_t>& vector,
-                     const uint64_t runs,
-                     const std::string additional_info) {
-  const auto get_compare = [](char_t * text, const uint64_t n) {
-      return lce_rk<char_t>::get_suffix_compare(text, n);
+                 const uint64_t runs,
+                 const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_rk<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "rk");
 }
 
-
 template <typename char_t>
 void run_sdsl_rk1k(const std::vector<char_t>& vector,
-                       const uint64_t runs,
-                       const std::string additional_info) {
-  const auto get_compare = [](char_t * text, const uint64_t n) {
-      return lce_rk_1k<char_t>::get_suffix_compare(text, n);
+                   const uint64_t runs,
+                   const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_rk_1k<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "rk-1k");
 }
 
 template <typename char_t>
 void run_sdsl_naive(const std::vector<char_t>& vector,
-                   const uint64_t runs,
-                   const std::string additional_info) {
-  const auto get_compare = [](char_t * text, const uint64_t n) {
-      return lce_naive<char_t>::get_suffix_compare(text, n);
+                    const uint64_t runs,
+                    const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_naive<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "naive");
 }
-
 
 template <typename char_t>
 void run_sdsl_isa_nsv(const std::vector<char_t>& vector,
@@ -175,22 +171,21 @@ void run_sdsl_isa_nsv(const std::vector<char_t>& vector,
   const uint64_t sa_bytes = (n - 1) * sizeof(int);
 
   const auto func = [&]() {
-      int* sa = (int*) malloc(sa_bytes);
-      divsufsort((unsigned char*) (&(vector.data()[1])), sa, n - 1);
+    int* sa = (int*) malloc(sa_bytes);
+    divsufsort((unsigned char*) (&(vector.data()[1])), sa, n - 1);
 
-      std::vector<int> isa(n - 1);
-      for (uint64_t i = 0; i < n - 1; ++i) {
-        isa[sa[i]] = i;
-      }
-      delete sa;
+    std::vector<int> isa(n - 1);
+    for (uint64_t i = 0; i < n - 1; ++i) {
+      isa[sa[i]] = i;
+    }
+    delete sa;
 
-      std::vector<unsigned int> result(n - 1);
-      sdsl::algorithm::calculate_nsv(isa, result);
+    std::vector<unsigned int> result(n - 1);
+    sdsl::algorithm::calculate_nsv(isa, result);
   };
   run_generic<output_types::array32>("sdsl-lyn-isa-nsv", additional_info, func,
                                      vector.size() - 2, runs);
 }
-
 
 template <typename char_t>
 void run_pss_sdsl_rk(const std::vector<char_t>& vector,
