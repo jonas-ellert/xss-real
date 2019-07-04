@@ -51,26 +51,11 @@ template <typename check_type, typename vec_type>
 static void check_all_xss_algos(const vec_type &instance) {
   // verify initial instance
   auto res0 = xss_isa_psv::run(instance.data(), instance.size());
-  check_type::check(instance, res0);
+
+  // check_type::check(instance, res0);
 
   check_xss_real<NAIVE, check_type> (instance, res0);
   check_xss_real<STATIC, check_type> (instance, res0);
   check_xss_real<DYNAMIC, check_type> (instance, res0);
   check_xss_real<DYNAMIC_BUFFERED, check_type> (instance, res0);
-
-//  auto rk = lce_rk<uint8_t>::get_suffix_compare(instance.data(), instance.size());
-//  res = psv_simple<>::run_from_comparison(rk, instance.size());
-//  if (res != res0)
-//    check_type::check(instance, res);
-//
-//  vec_type copy = instance;
-//  res = xss_prezza::run(copy.data(), instance.size());
-//  if (res != res0)
-//    check_type::check(instance, res);
-//
-//  copy = instance;
-//  res = xss_prezza::run1k(copy.data(), instance.size());
-//  if (res != res0)
-//    check_type::check(instance, res);
-
 }

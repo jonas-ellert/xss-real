@@ -32,7 +32,7 @@ constexpr static uint64_t run_max_n = 1024;
 constexpr static uint64_t run_of_runs_min_rep = 2;
 constexpr static uint64_t run_of_runs_max_rep = 10;
 constexpr static uint64_t run_of_runs_min_pow_rep = 16;
-constexpr static uint64_t run_of_runs_max_pow_rep = 128;
+constexpr static uint64_t run_of_runs_max_pow_rep = 1024;
 
 using check_type = nss_check<true, true>;
 

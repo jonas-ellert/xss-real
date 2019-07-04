@@ -45,6 +45,7 @@ static void ror_internal(uint8_t* result,
   }
 }
 
+[[maybe_unused]]
 static std::vector<uint8_t> gen_run_of_runs(const uint64_t length,
                                             const uint64_t repetitions) {
 

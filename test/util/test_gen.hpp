@@ -112,23 +112,22 @@ static void generate_test_run_of_runs_internal(const uint64_t n, const uint64_t 
 
 [[maybe_unused]]
 static vec_type generate_test_run_of_runs(uint64_t n, uint64_t run_len) {
-  vec_type result(n);
-  auto r = gen_run_of_runs(n - 2, run_len);
-  result[0] = result[n - 1] = test_gen_sentinel;
-  for (uint64_t i = 0; i < n - 2; ++i) {
-    result[i + 1] = r[i];
-  }
-  return result;
-//  vec_type result;
-//  result.reserve(n);
-//  result.push_back(test_gen_sentinel);
-//  run_len
-//  generate_test_run_of_runs_internal(n - 2, run_len, result);
-//  const auto len = result.size() - 1;
-//  while (result.size() < n - 1)
-//    result.push_back(result[result.size() - len]);
-//  result.push_back(test_gen_sentinel);
+//  vec_type result(n);
+//  auto r = gen_run_of_runs(n - 2, run_len);
+//  result[0] = result[n - 1] = test_gen_sentinel;
+//  for (uint64_t i = 0; i < n - 2; ++i) {
+//    result[i + 1] = r[i];
+//  }
 //  return result;
+  vec_type result;
+  result.reserve(n);
+  result.push_back(test_gen_sentinel);
+  generate_test_run_of_runs_internal(n - 2, run_len, result);
+  const auto len = result.size() - 1;
+  while (result.size() < n - 1)
+    result.push_back(result[result.size() - len]);
+  result.push_back(test_gen_sentinel);
+  return result;
 }
 
 [[maybe_unused]]
