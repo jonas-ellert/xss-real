@@ -248,18 +248,19 @@ int32_t main(int32_t argc, char const* argv[]) {
       '\0', "run-of-runs", s.run_of_runs,
       "Build run of runs of given repetitions (e.g. "
       "\"abcccbcccbcccabcccbcccbcccabcccbcccbccc\" for 3 repetitions).");
-  cp.add_bytes('\0', "random", s.random,
-               "Build random string of given alphabet size (at most 255). "
-               "An optional seed can be provided (--seed).");
-  cp.add_bytes('\0', "seed", s.seed, "Seed for random strings.");
+  cp.add_flag('\0', "overlap", s.overlap, "Build strongly overlapping string.");
   cp.add_flag('\0', "fibonacci-abc", s.fibonacci_abc,
               "Build fibonacci string (with fib0=\"a\" and fib1=\"bc\").");
-  cp.add_flag('\0', "overlap", s.overlap, "Build strongly overlapping string.");
+
   cp.add_flag('\0', "fibonacci-aab", s.fibonacci_aab,
               "Build fibonacci string (with fib0=\"a\" and fib1=\"ab\").");
   cp.add_flag('\0', "pc", s.pizza_chili,
               "Download the pizza chili text collection"
               "(http://pizzachili.dcc.uchile.cl/texts.html).");
+  cp.add_bytes('\0', "random", s.random,
+               "Build random string of given alphabet size (at most 255). "
+               "An optional seed can be provided (--seed).");
+  cp.add_bytes('\0', "seed", s.seed, "Seed for random strings.");
 
   if (!cp.process(argc, argv)) {
     std::cerr << "Could not parse arguments." << std::endl;
