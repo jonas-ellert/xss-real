@@ -131,15 +131,15 @@ int32_t run(const std::vector<char_t>& vector, const std::string name) {
 
     if (s.matches("sdsl-lyn-naive"))
       run_sdsl_naive(vector, runs, additional_info);
+    if (s.matches("sdsl-lyn-herlez"))
+      run_sdsl_herlez(vector, runs, additional_info);
+    if (s.matches("sdsl-lyn-herlez-1k"))
+      run_sdsl_herlez1k(vector, runs, additional_info);
+
     if (s.matches("sdsl-lyn-prezza"))
       run_sdsl_prezza(vector, runs, additional_info);
     if (s.matches("sdsl-lyn-prezza-1k"))
       run_sdsl_prezza1k(vector, runs, additional_info);
-
-    if (s.matches("sdsl-lyn-rk"))
-      run_sdsl_rk(vector, runs, additional_info);
-    if (s.matches("sdsl-lyn-rk-1k"))
-      run_sdsl_rk1k(vector, runs, additional_info);
 
     if (s.matches("sdsl-isa-nsv"))
       run_sdsl_isa_nsv(vector, runs, additional_info);

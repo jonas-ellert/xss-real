@@ -20,40 +20,21 @@
 
 #pragma once
 
-#include <data_structures/lce/rk/rk_lce.hpp>
-#include <util/common.hpp>
+#include <algorithms/psv_simple.hpp>
+#include <data_structures/lce/lce_herlez.hpp>
+#include <data_structures/lce/lce_herlez1k.hpp>
 
-template <typename value_type = uint8_t>
-class lce_rk {
+class xss_herlez {
 public:
-  struct lce {
-    rklce::rk_lce rk_lce_;
-    lce(const value_type* text, const uint64_t n) : rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
-      return rk_lce_.LCE(i, j);
-    }
-  };
-
-  struct suffix_compare {
-    const value_type* text_;
-    lce rk_lce_;
-    suffix_compare(const value_type* text, const uint64_t n)
-        : text_(text), rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
-      uint64_t lce = rk_lce_(i, j);
-      return text_[i + lce] < text_[j + lce];
-    }
-  };
-
-  always_inline static lce get_lce(const value_type* text, const uint64_t n) {
-    return lce(text, n);
+  template <typename value_type>
+  static auto run(value_type* text, const uint64_t n) {
+    auto compare = lce_herlez<value_type>::get_suffix_compare(text, n);
+    return psv_simple<>::run_from_comparison(compare, n);
   }
 
-  always_inline static suffix_compare get_suffix_compare(const value_type* text,
-                                                         const uint64_t n) {
-    return suffix_compare(text, n);
+  template <typename value_type>
+  static auto run1k(value_type* text, const uint64_t n) {
+    auto compare = lce_herlez1k<value_type>::get_suffix_compare(text, n);
+    return psv_simple<>::run_from_comparison(compare, n);
   }
-
-private:
-  lce_rk() {}
 };

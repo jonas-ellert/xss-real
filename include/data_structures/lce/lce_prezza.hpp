@@ -20,43 +20,37 @@
 
 #pragma once
 
-#include <lcePrezza.hpp>
+#include <data_structures/lce/rk/rk_lce.hpp>
 #include <util/common.hpp>
 
 template <typename value_type = uint8_t>
 class lce_prezza {
 public:
-  template <typename vt>
   struct lce {
-    LcePrezza prezza_;
-    lce(vt* text, const uint64_t n) : prezza_(text, n) {}
+    rklce::rk_lce rk_lce_;
+    lce(const value_type* text, const uint64_t n) : rk_lce_(text, n) {}
     always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
-      return prezza_.lce(i, j);
+      return rk_lce_.LCE(i, j);
     }
-
-    lce(const lce&) = delete;
-    lce& operator=(const lce&) = delete;
   };
 
-  template <typename vt>
   struct suffix_compare {
-    LcePrezza prezza_;
-    suffix_compare(vt* text, const uint64_t n) : prezza_(text, n) {}
+    const value_type* text_;
+    lce rk_lce_;
+    suffix_compare(const value_type* text, const uint64_t n)
+        : text_(text), rk_lce_(text, n) {}
     always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
-      return prezza_.isSmallerSuffix(i, j);
+      uint64_t lce = rk_lce_(i, j);
+      return text_[i + lce] < text_[j + lce];
     }
-
-    suffix_compare(const suffix_compare&) = delete;
-    suffix_compare& operator=(const suffix_compare&) = delete;
   };
 
-  always_inline static lce<value_type> get_lce(value_type* text,
-                                               const uint64_t n) {
+  always_inline static lce get_lce(const value_type* text, const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare<value_type>
-  get_suffix_compare(value_type* text, const uint64_t n) {
+  always_inline static suffix_compare get_suffix_compare(const value_type* text,
+                                                         const uint64_t n) {
     return suffix_compare(text, n);
   }
 

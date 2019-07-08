@@ -23,12 +23,12 @@
 #include <algorithms/psv_simple.hpp>
 #include <algorithms/xss_bps.hpp>
 #include <algorithms/xss_bps_lcp.hpp>
+#include <algorithms/xss_herlez.hpp>
 #include <algorithms/xss_isa_psv.hpp>
-#include <algorithms/xss_prezza.hpp>
 #include <algorithms/xss_real.hpp>
 #include <data_structures/bit_vectors/support/bps_support_sdsl.hpp>
-#include <data_structures/lce/lce_rk.hpp>
-#include <data_structures/lce/lce_rk1k.hpp>
+#include <data_structures/lce/lce_prezza.hpp>
+#include <data_structures/lce/lce_prezza1k.hpp>
 #include <data_structures/lce/lce_stats.hpp>
 #include <divsufsort.h>
 #include <gsaca.h>
@@ -43,7 +43,8 @@ void run_generic(const std::string name,
                  runner_type& runner,
                  teardown_type& teardown,
                  const uint64_t n,
-                 const uint64_t runs) {
+                 const uint64_t runs,
+                 const uint64_t bpn_offset = 0) {
 
   static_assert(type == output_types::array32 ||
                 type == output_types::array64 || type == output_types::bps);
@@ -60,8 +61,9 @@ void run_generic(const std::string name,
       (type != output_types::bps)
           ? ((type != output_types::array32) ? (8 * n) : (4 * n))
           : (n / 4);
-  const uint64_t total_memory = time_mem.second + n;
-  const uint64_t additional_memory = time_mem.second - result_bytes;
+  const uint64_t total_memory = time_mem.second + n - (bpn_offset * n / 8);
+  const int64_t additional_memory =
+      time_mem.second - result_bytes - (bpn_offset * n / 8);
 
   std::cout << "median_time=" << time_mem.first
             << " total_memory=" << total_memory
@@ -81,9 +83,10 @@ void run_generic(const std::string name,
                  const std::string additional_info,
                  runner_type& runner,
                  const uint64_t n,
-                 const uint64_t runs) {
+                 const uint64_t runs,
+                 const uint64_t bpn_offset = 0) {
   const auto dummy = []() {};
-  run_generic<type>(name, additional_info, runner, dummy, n, runs);
+  run_generic<type>(name, additional_info, runner, dummy, n, runs, bpn_offset);
 }
 
 template <typename get_compare_type, typename char_t>
@@ -91,7 +94,8 @@ void run_sdsl_generic(const get_compare_type get_compare,
                       const std::vector<char_t>& vector,
                       const uint64_t runs,
                       const std::string additional_info,
-                      const std::string sdsl_info) {
+                      const std::string sdsl_info,
+                      const uint64_t bpn_offset = 0) {
   static_assert(sizeof(unsigned int) == 4);
   const uint64_t n = vector.size() - 1;
   std::vector<char_t> vector_no_front(n);
@@ -108,7 +112,28 @@ void run_sdsl_generic(const get_compare_type get_compare,
   };
 
   run_generic<output_types::array32>("sdsl-lyn-" + sdsl_info, additional_info,
-                                     func, post, vector.size() - 2, runs);
+                                     func, post, vector.size() - 2, runs,
+                                     bpn_offset);
+}
+
+template <typename char_t>
+void run_sdsl_herlez(const std::vector<char_t>& vector,
+                     const uint64_t runs,
+                     const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_herlez<char_t>::get_suffix_compare(text, n);
+  };
+  run_sdsl_generic(get_compare, vector, runs, additional_info, "herlez");
+}
+
+template <typename char_t>
+void run_sdsl_herlez1k(const std::vector<char_t>& vector,
+                       const uint64_t runs,
+                       const std::string additional_info) {
+  const auto get_compare = [](char_t* text, const uint64_t n) {
+    return lce_herlez1k<char_t>::get_suffix_compare(text, n);
+  };
+  run_sdsl_generic(get_compare, vector, runs, additional_info, "herlez-1k");
 }
 
 template <typename char_t>
@@ -118,7 +143,7 @@ void run_sdsl_prezza(const std::vector<char_t>& vector,
   const auto get_compare = [](char_t* text, const uint64_t n) {
     return lce_prezza<char_t>::get_suffix_compare(text, n);
   };
-  run_sdsl_generic(get_compare, vector, runs, additional_info, "prezza");
+  run_sdsl_generic(get_compare, vector, runs, additional_info, "prezza", 8);
 }
 
 template <typename char_t>
@@ -129,26 +154,6 @@ void run_sdsl_prezza1k(const std::vector<char_t>& vector,
     return lce_prezza1k<char_t>::get_suffix_compare(text, n);
   };
   run_sdsl_generic(get_compare, vector, runs, additional_info, "prezza-1k");
-}
-
-template <typename char_t>
-void run_sdsl_rk(const std::vector<char_t>& vector,
-                 const uint64_t runs,
-                 const std::string additional_info) {
-  const auto get_compare = [](char_t* text, const uint64_t n) {
-    return lce_rk<char_t>::get_suffix_compare(text, n);
-  };
-  run_sdsl_generic(get_compare, vector, runs, additional_info, "rk");
-}
-
-template <typename char_t>
-void run_sdsl_rk1k(const std::vector<char_t>& vector,
-                   const uint64_t runs,
-                   const std::string additional_info) {
-  const auto get_compare = [](char_t* text, const uint64_t n) {
-    return lce_rk_1k<char_t>::get_suffix_compare(text, n);
-  };
-  run_sdsl_generic(get_compare, vector, runs, additional_info, "rk-1k");
 }
 
 template <typename char_t>
@@ -197,15 +202,16 @@ void run_pss_sdsl_rk(const std::vector<char_t>& vector,
   vector_no_front.assign(vector.begin() + 1, vector.end());
 
   const auto func = [&]() {
-    auto rk = lce_rk<uint8_t>::get_suffix_compare(vector_no_front.data(), n);
+    auto rk =
+        lce_prezza<uint8_t>::get_suffix_compare(vector_no_front.data(), n);
     std::vector<unsigned int> result(n);
     sdsl::algorithm::calculate_pss(rk, result);
   };
   const auto post = [&]() {
     vector_no_front.assign(vector.begin() + 1, vector.end());
   };
-  run_generic<output_types::array32>("pss-sdsl-rk-lce", additional_info, func,
-                                     post, vector.size() - 2, runs);
+  run_generic<output_types::array32>("pss-sdsl-prezza-lce", additional_info,
+                                     func, post, vector.size() - 2, runs);
 }
 
 template <typename char_t>
@@ -218,14 +224,15 @@ void run_pss_sdsl_rk1k(const std::vector<char_t>& vector,
   vector_no_front.assign(vector.begin() + 1, vector.end());
 
   const auto func = [&]() {
-    auto rk = lce_rk_1k<uint8_t>::get_suffix_compare(vector_no_front.data(), n);
+    auto rk =
+        lce_prezza1k<uint8_t>::get_suffix_compare(vector_no_front.data(), n);
     std::vector<unsigned int> result(n);
     sdsl::algorithm::calculate_pss(rk, result);
   };
   const auto post = [&]() {
     vector_no_front.assign(vector.begin() + 1, vector.end());
   };
-  run_generic<output_types::array32>("pss-sdsl-rk-lce-1k", additional_info,
+  run_generic<output_types::array32>("pss-sdsl-prezza-lce-1k", additional_info,
                                      func, post, vector.size() - 2, runs);
 }
 
@@ -393,7 +400,8 @@ void run_xss_simple_rk(const std::vector<char_t>& vector,
                        const uint64_t runs,
                        const std::string additional_info) {
   const auto func = [&]() {
-    auto rk = lce_rk<uint8_t>::get_suffix_compare(vector.data(), vector.size());
+    auto rk =
+        lce_prezza<uint8_t>::get_suffix_compare(vector.data(), vector.size());
     psv_simple<>::run_from_comparison(rk, vector.size());
   };
   run_generic<output_types::bps>("xss-simple-rk-lce", additional_info, func,
@@ -406,7 +414,7 @@ void run_xss_simple_rk1k(const std::vector<char_t>& vector,
                          const std::string additional_info) {
   const auto func = [&]() {
     auto rk =
-        lce_rk_1k<uint8_t>::get_suffix_compare(vector.data(), vector.size());
+        lce_prezza1k<uint8_t>::get_suffix_compare(vector.data(), vector.size());
     psv_simple<>::run_from_comparison(rk, vector.size());
   };
   run_generic<output_types::bps>("xss-simple-rk-lce-1k", additional_info, func,

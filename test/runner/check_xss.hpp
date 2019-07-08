@@ -25,10 +25,10 @@
 #include <algorithms/xss_bps.hpp>
 #include <algorithms/xss_bps_lcp.hpp>
 #include <algorithms/psv_simple.hpp>
-#include <algorithms/xss_prezza.hpp>
+#include <algorithms/xss_herlez.hpp>
 #include <algorithms/xss_isa_psv.hpp>
 #include <data_structures/stacks/stack_strategy.hpp>
-#include <data_structures/lce/lce_rk.hpp>
+#include <data_structures/lce/lce_prezza.hpp>
 
 template <stack_strategy strategy, typename check_type, typename vec_type, typename result_type>
 static void check_all_xss_algos(const vec_type &instance, const result_type &correct_result) {

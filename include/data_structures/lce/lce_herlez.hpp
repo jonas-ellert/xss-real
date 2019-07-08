@@ -20,21 +20,46 @@
 
 #pragma once
 
-#include <algorithms/psv_simple.hpp>
-#include <data_structures/lce/lce_prezza.hpp>
-#include <data_structures/lce/lce_prezza1k.hpp>
+#include <lcePrezza.hpp>
+#include <util/common.hpp>
 
-class xss_prezza {
+template <typename value_type = uint8_t>
+class lce_herlez {
 public:
-  template <typename value_type>
-  static auto run(value_type* text, const uint64_t n) {
-    auto compare = lce_prezza<value_type>::get_suffix_compare(text, n);
-    return psv_simple<>::run_from_comparison(compare, n);
+  template <typename vt>
+  struct lce {
+    LcePrezza prezza_;
+    lce(vt* text, const uint64_t n) : prezza_(text, n) {}
+    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+      return prezza_.lce(i, j);
+    }
+
+    lce(const lce&) = delete;
+    lce& operator=(const lce&) = delete;
+  };
+
+  template <typename vt>
+  struct suffix_compare {
+    LcePrezza prezza_;
+    suffix_compare(vt* text, const uint64_t n) : prezza_(text, n) {}
+    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+      return prezza_.isSmallerSuffix(i, j);
+    }
+
+    suffix_compare(const suffix_compare&) = delete;
+    suffix_compare& operator=(const suffix_compare&) = delete;
+  };
+
+  always_inline static lce<value_type> get_lce(value_type* text,
+                                               const uint64_t n) {
+    return lce(text, n);
   }
 
-  template <typename value_type>
-  static auto run1k(value_type* text, const uint64_t n) {
-    auto compare = lce_prezza1k<value_type>::get_suffix_compare(text, n);
-    return psv_simple<>::run_from_comparison(compare, n);
+  always_inline static suffix_compare<value_type>
+  get_suffix_compare(value_type* text, const uint64_t n) {
+    return suffix_compare(text, n);
   }
+
+private:
+  lce_herlez() {}
 };
