@@ -31,7 +31,7 @@
 #include <data_structures/lce/lce_rk.hpp>
 
 template <stack_strategy strategy, typename check_type, typename vec_type, typename result_type>
-static void check_xss_real(const vec_type &instance, const result_type &correct_result) {
+static void check_all_xss_algos(const vec_type &instance, const result_type &correct_result) {
   constexpr uint64_t max_delta = (strategy != NAIVE) ? 32 : 1;
   for (uint64_t delta = 1; delta <= max_delta; delta = delta << 1) {
     auto res = xss_real<strategy, ctz_builtin>::run(instance.data(), instance.size(), delta);
@@ -54,8 +54,8 @@ static void check_all_xss_algos(const vec_type &instance) {
 
   // check_type::check(instance, res0);
 
-  check_xss_real<NAIVE, check_type> (instance, res0);
-  check_xss_real<STATIC, check_type> (instance, res0);
-  check_xss_real<DYNAMIC, check_type> (instance, res0);
-  check_xss_real<DYNAMIC_BUFFERED, check_type> (instance, res0);
+  check_all_xss_algos<NAIVE, check_type> (instance, res0);
+  check_all_xss_algos<STATIC, check_type> (instance, res0);
+  check_all_xss_algos<DYNAMIC, check_type> (instance, res0);
+  check_all_xss_algos<DYNAMIC_BUFFERED, check_type> (instance, res0);
 }

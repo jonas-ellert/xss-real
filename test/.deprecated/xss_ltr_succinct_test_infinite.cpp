@@ -23,9 +23,9 @@
 #include <cmath>
 #include <random>
 
-#include "runner/check_xss.hpp"
-#include "util/test_check.hpp"
-#include "util/test_gen.hpp"
+#include "../runner/check_xss.hpp"
+#include "../util/test_check.hpp"
+#include "../util/test_gen.hpp"
 
 constexpr static uint8_t max_sigma = 4;
 constexpr static uint64_t min_n = 4;

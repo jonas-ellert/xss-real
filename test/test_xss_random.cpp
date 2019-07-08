@@ -19,34 +19,8 @@
 //  SOFTWARE.
 
 #include <gtest/gtest.h>
+#include "util/test_random.hpp"
 
-#include "util/test_check.hpp"
-#include "util/test_lookahead.hpp"
-#include <algorithms/xss_real.hpp>
-
-using check_type = nss_check<true, true>;
-
-template <typename instance_collection>
-static void hand_selected_test(instance_collection &&instances) {
-  std::cout << "Number of instances: " << instances.size() << std::endl;
-  uint64_t count = 0;
-  for (auto instance : instances) {
-    std::cout << "Testing instance " << ++count
-              << " (of length " << instance.size() << "): " << std::flush;
-
-    auto res = xss_real<NAIVE, ctz_builtin>::run(instance.data(), instance.size());
-    check_type::check(instance, res);
-    std::cout << "Forwards done. " << std::flush;
-
-    std::reverse(instance.begin(), instance.end());
-    res = xss_real<NAIVE, ctz_builtin>::run(instance.data(), instance.size());
-    check_type::check(instance, res);
-    std::cout << "Backwards done." << std::endl;
-  }
-}
-
-TEST(xss, lookahead) {
-  std::cout << "Testing XSS with hand selected instances "
-            <<"(cover all lookahead cases)." << std::endl;
-  hand_selected_test(manual_test_instances_lookahead(1000000));
+TEST(xss, random) {
+  random_test();
 }

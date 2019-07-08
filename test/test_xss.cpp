@@ -23,6 +23,7 @@
 #include "runner/check_xss.hpp"
 #include "util/test_check.hpp"
 #include "util/test_gen.hpp"
+#include "util/test_random.hpp"
 #include "util/test_manual.hpp"
 #include "util/test_lookahead.hpp"
 
@@ -172,4 +173,8 @@ TEST(xss, ababc) {
 TEST(xss, ababc2) {
   std::cout << "Testing XSS with \"ababc\" run (terminate run with z)." << std::endl;
   ababc_test(true);
+}
+
+TEST(xss, random) {
+  random_test();
 }

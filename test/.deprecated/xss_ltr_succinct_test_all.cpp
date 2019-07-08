@@ -20,8 +20,8 @@
 
 #include <gtest/gtest.h>
 
-#include "runner/check_xss.hpp"
-#include "util/test_check.hpp"
+#include "../runner/check_xss.hpp"
+#include "../util/test_check.hpp"
 
 constexpr static uint8_t max_sigma = 128;
 constexpr static uint64_t max_n = 10 * 1024;

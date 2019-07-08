@@ -35,7 +35,7 @@
 
 #include <algorithm/xss_real.hpp>
 #include <util/time_measure.hpp>
-#include "util/test_files.hpp"
+#include "../util/test_files.hpp"
 
 
 const static std::string size_suffix = ".50MB";

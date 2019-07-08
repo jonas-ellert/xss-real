@@ -35,8 +35,8 @@
 
 #include <algorithm/xss_real.hpp>
 #include <util/time_measure.hpp>
-#include "util/test_gen.hpp"
-#include "util/test_files.hpp"
+#include "../util/test_gen.hpp"
+#include "../util/test_files.hpp"
 
 constexpr static uint64_t n = 64ULL * 1024 * 1024;
 constexpr static uint64_t run_of_runs_min_period = 2;
