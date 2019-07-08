@@ -270,21 +270,28 @@ int32_t main(int32_t argc, char const* argv[]) {
     std::cout << "    "
               << "xss-bps" << std::endl;
     std::cout << "    "
-              << "xss-isa-psv" << std::endl;
+              << "bps-support-sada" << std::endl;
     std::cout << "    "
-              << "psv-simple" << std::endl;
+              << "sdsl-lyn-naive" << std::endl;
     std::cout << "    "
-              << "pss-sdsl-naive" << std::endl;
+              << "sdsl-lyn-herlez" << std::endl;
     std::cout << "    "
-              << "psv-sdsl-naive" << std::endl;
+              << "sdsl-lyn-herlez-1k" << std::endl;
+    std::cout << "    "
+              << "sdsl-lyn-prezza" << std::endl;
+    std::cout << "    "
+              << "sdsl-lyn-prezza-1k" << std::endl;
+    std::cout << "    "
+              << "sdsl-lyn-isa-nsv" << std::endl;
+    std::cout << "    "
+              << "divsufsort" << std::endl;
     std::cout << "    "
               << "gsaca" << std::endl;
     std::cout << "    "
               << "gsaca-phase1" << std::endl;
     std::cout << "    "
               << "gsaca-lyndon" << std::endl;
-    std::cout << "    "
-              << "divsufsort" << std::endl;
+
     return 0;
   }
 
