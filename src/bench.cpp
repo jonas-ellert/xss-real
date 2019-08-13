@@ -112,6 +112,10 @@ int32_t run(const std::vector<char_t>& vector, const std::string name) {
       }
     }
 
+    if (s.matches("nss-real")) {
+      run_nss_real(vector, runs, additional_info);
+    }
+
     if (s.matches("xss-bps-lcp")) {
       for (const auto delta : s.deltas) {
         run_xss_bps_lcp<DYNAMIC_BUFFERED, ctz_type>(vector, delta, runs,

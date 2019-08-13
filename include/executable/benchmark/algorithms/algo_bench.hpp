@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <algorithms/nss_real.hpp>
 #include <algorithms/psv_simple.hpp>
 #include <algorithms/xss_bps.hpp>
 #include <algorithms/xss_bps_lcp.hpp>
@@ -361,6 +362,22 @@ void run_xss_real(const std::vector<char_t>& vector,
       ((additional_info.size() > 0) ? " " : "") + additional_info;
   run_generic<output_types::bps>("xss-real", info, func, vector.size() - 2,
                                  runs);
+}
+
+template <typename char_t>
+void run_nss_real(const std::vector<char_t>& vector,
+                  const uint64_t runs,
+                  const std::string additional_info) {
+  uint32_t* nss;
+  const auto func = [&]() {
+    nss = (uint32_t*) malloc(vector.size() * sizeof(uint32_t));
+    memset(nss, 0, vector.size() * sizeof(uint32_t));
+    nss_real::run(vector.data(), nss, vector.size());
+  };
+  const auto post = [&]() { delete nss; };
+
+  run_generic<output_types::array32>("nss-real", additional_info, func, post,
+                                     vector.size() - 2, runs);
 }
 
 template <stack_strategy alloc, typename ctz_type, typename char_t>
