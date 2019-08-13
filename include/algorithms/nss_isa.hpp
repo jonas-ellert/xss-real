@@ -42,10 +42,10 @@ public:
     }
 
     int j, prev_j;
-    int *nss = result.data();
+    int* nss = result.data();
     nss[0] = n - 1;
     nss[n - 1] = n;
-    for (int i = 1; i < (int)n - 1; ++i) {
+    for (int i = 1; i < (int) n - 1; ++i) {
       j = i - 1;
       while (isa[j] > isa[i]) {
         prev_j = j;
