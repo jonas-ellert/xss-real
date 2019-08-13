@@ -46,21 +46,75 @@ private:
       }
 
       index_type lce = get_lce(j, i);
+      index_type max_lce = lce;
+      index_type max_lce_j = j;
 
       while (text[j + lce] > text[i + lce]) {
-        lce = std::min(lce, L.top());
+        index_type ltop = L.top();
         if constexpr (nss_enabled)
           nss[j] = i;
         H.pop();
         L.pop();
         j = H.top();
-        lce = get_lce(j, i, lce);
+
+        if (ltop == lce) {
+          lce = get_lce(j, i, lce);
+          max_lce = lce;
+          max_lce_j = j;
+        }
+        else {
+          lce = std::min(lce, ltop);
+        }
       }
-      
-      H.push(i);
-      L.push(lce);
+
       if constexpr (pss_enabled)
         pss[i] = j;
+      H.push(i);
+      L.push(lce);
+
+      if (unlikely(max_lce > 64)) {
+        j = max_lce_j;
+        const index_type distance = i - j;
+        bool j_smaller_i = text[j + max_lce] < text[i + max_lce];
+
+        // RUN EXTENSION
+        if (unlikely(max_lce >= 2 * distance)) {
+          const index_type repetitions = max_lce / distance - 1;
+          // INCREASING RUN (set start positions of repetitions)
+          if (j_smaller_i) {
+            for (index_type r = 0; r < repetitions; ++r) {
+              i += distance;
+              if constexpr (pss_enabled)
+                pss[i] = i - distance;
+              max_lce -= distance;
+              H.push(i);
+              L.push(max_lce);
+            }
+          }
+          // DECREASING RUN (set start positions of repetitions)
+          else {
+            for (index_type r = 0; r < repetitions; ++r) {
+              i += distance;
+              if constexpr (nss_enabled)
+                nss[i] = i + distance;
+              if constexpr (pss_enabled)
+                pss[i] = pss[j];
+            }
+            H.pop();
+            H.push(i);
+          }
+          //FOR BOTH INCREASING AND DECREASING RUNS (fill in between start positions)
+          for (index_type k = j + distance; k < i;) {
+            const index_type next_limit = k + distance;
+            for(++k; k < next_limit; ++k) {
+              if constexpr (nss_enabled)
+                nss[k] = nss[k - distance] + distance;
+              if constexpr (pss_enabled)
+                pss[k] = pss[k - distance] + distance;
+            }
+          }
+        }
+      }
     }
     if constexpr (nss_enabled) {
       while ((j = H.top()) > 0) {
