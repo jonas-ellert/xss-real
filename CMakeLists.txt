@@ -108,6 +108,10 @@ add_library(tlx_command_line
         external/tlx/tlx/string/parse_si_iec_units.cpp)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/tlx)
 
+# Add nss-real
+print(STATUS "Adding nss-real includes...")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/nss-real/include)
+
 # Add GSACA
 print(STATUS "Adding gsaca libraries and includes...")
 add_library(gsaca external/gsaca-lyndon/gsaca.c)

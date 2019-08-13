@@ -21,22 +21,23 @@
 #pragma once
 
 #include "util/enums.hpp"
-#include <algorithms/nss_real.hpp>
+#include <nss-real.hpp>
 #include <algorithms/nss_isa.hpp>
 
 template <typename check_type, typename vec_type>
 static void check_xss_array(const vec_type &instance) {
   const uint64_t n = instance.size();
   const auto text = instance.data();
-  std::vector<uint32_t> nss_vec(n);
-  nss_real::run(text, nss_vec.data(), n);
+
+  using index_type = uint32_t;
+  auto nss_vec = nss_real::nss<index_type>(text, n);
 
 
 
 
   const auto from_isa = nss_isa::run(text, n);
   for (uint64_t i = 0; i < n; ++i) {
-    if (nss_vec[i] != (uint32_t)(from_isa[i])) {
+    if (nss_vec[i] != (index_type)(from_isa[i])) {
       std::cout << "nss[" << i << "] is " << nss_vec[i] << ", but should be " << from_isa[i] << "." << std::endl;
     }
 
