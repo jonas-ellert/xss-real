@@ -4,7 +4,7 @@
 #include <data_structures/lce/lce_naive.hpp>
 #include <stack>
 
-class xss_array {
+class nss_real {
 private:
   template <typename value_type, typename index_type>
   static void

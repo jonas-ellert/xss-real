@@ -21,7 +21,7 @@
 #pragma once
 
 #include "util/enums.hpp"
-#include <algorithms/xss_array.hpp>
+#include <algorithms/nss_real.hpp>
 #include <algorithms/nss_isa.hpp>
 
 template <typename check_type, typename vec_type>
@@ -29,7 +29,7 @@ static void check_xss_array(const vec_type &instance) {
   const uint64_t n = instance.size();
   const auto text = instance.data();
   std::vector<uint32_t> nss_vec(n);
-  xss_array::run(text, nss_vec.data(), n);
+  nss_real::run(text, nss_vec.data(), n);
 
 
 
