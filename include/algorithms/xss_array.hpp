@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithms/duval.hpp>
 #include <data_structures/lce/lce_naive.hpp>
 #include <stack>
 
@@ -19,7 +20,7 @@ private:
     H.push(0);
     L.push(0);
 
-//    auto compare = lce_naive<value_type>::get_suffix_compare(text, n);
+    //    auto compare = lce_naive<value_type>::get_suffix_compare(text, n);
     auto get_lce = lce_naive<value_type>::get_lce(text, n);
 
     if constexpr (pss_enabled) {
@@ -61,8 +62,7 @@ private:
           lce = get_lce(j, i, lce);
           max_lce = lce;
           max_lce_j = j;
-        }
-        else {
+        } else {
           lce = std::min(lce, ltop);
         }
       }
@@ -100,19 +100,84 @@ private:
               if constexpr (pss_enabled)
                 pss[i] = pss[j];
             }
+            if constexpr (nss_enabled)
+              nss[i] = 0;
             H.pop();
             H.push(i);
           }
-          //FOR BOTH INCREASING AND DECREASING RUNS (fill in between start positions)
+          // FOR BOTH INCREASING AND DECREASING RUNS (fill in between start
+          // positions)
           for (index_type k = j + distance; k < i;) {
             const index_type next_limit = k + distance;
-            for(++k; k < next_limit; ++k) {
+            for (++k; k < next_limit; ++k) {
               if constexpr (nss_enabled)
                 nss[k] = nss[k - distance] + distance;
               if constexpr (pss_enabled)
                 pss[k] = pss[k - distance] + distance;
             }
           }
+        }
+        // AMORTIZED LOOK-AHEAD
+        else {
+          const index_type ell = div<4>(max_lce);
+          index_type anchor = ell;
+
+          // check if gamm_ell is an extended lyndon run
+          const auto lce_str = &(text[i]);
+          const auto duval =
+              is_extended_lyndon_run(&(lce_str[ell]), max_lce - ell);
+
+          // try to extend the lyndon run as far as possible to the left
+          if (duval.first > 0) {
+            const index_type period = duval.first;
+            const auto repetition_eq = [&](const index_type l,
+                                           const index_type r) {
+              for (index_type k = 0; k < period; ++k)
+                if (unlikely(lce_str[l + k] != lce_str[r + k]))
+                  return false;
+              return true;
+            };
+            int64_t lhs = ell + duval.second - period;
+            while (lhs >= 0 && repetition_eq(lhs, lhs + period)) {
+              lhs -= period;
+            }
+            anchor = std::min(ell, (index_type)(lhs + 2 * period));
+          }
+
+          //           if(anchor < ell)
+//          std::cout << "AL " << j << " " << i << " " << max_lce << " " << ell
+//                    << " " << anchor << std::endl;
+
+          for (index_type k = 1; k < anchor; ++k) {
+            if constexpr (nss_enabled)
+              if (nss[j + k] < j + anchor) {
+                nss[i + k] = nss[j + k] + distance;
+//                std::cout << i + k << " " << nss[i + k] << " " << nss[j + k]
+//                          << std::endl;
+              }
+            if constexpr (pss_enabled)
+              pss[i + k] = pss[j + k] + distance;
+          }
+
+          if constexpr (nss_enabled) {
+            for (index_type k = 1; k < anchor; ++k) {
+              if (nss[i + k] == 0) {
+                L.push(get_lce(H.top(), i + k));
+                H.push(i + k);
+              }
+            }
+          } else {
+            for (index_type k = 1; k < anchor; ++k) {
+              while (H.top() != pss[i + k]) {
+                H.pop();
+                L.pop();
+              }
+              L.push(get_lce(H.top(), i + k));
+              H.push(i + k);
+            }
+          }
+
+          i += anchor - 1;
         }
       }
     }
