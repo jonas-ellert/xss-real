@@ -22,26 +22,25 @@
 
 #include "util/enums.hpp"
 #include <algorithms/xss_array.hpp>
+#include <algorithms/nss_isa.hpp>
 
 template <typename check_type, typename vec_type>
 static void check_xss_array(const vec_type &instance) {
   const uint64_t n = instance.size();
   const auto text = instance.data();
-  std::vector<uint32_t> pss_vec(n);
   std::vector<uint32_t> nss_vec(n);
+  xss_array::run(text, nss_vec.data(), n);
 
-  xss_array::run(text, nullptr, nullptr, n);
-  xss_array::run(text, pss_vec.data(), nullptr, n);
-  xss_array::run(text, nullptr, nss_vec.data(), n);
 
-  check_type::check_pss(instance, pss_vec);
-  check_type::check_nss(instance, nss_vec);
 
-  pss_vec = std::vector<uint32_t>(n);
-  nss_vec = std::vector<uint32_t>(n);
 
-  xss_array::run(text, pss_vec.data(), nss_vec.data(), n);
+  const auto from_isa = nss_isa::run(text, n);
+  for (uint64_t i = 0; i < n; ++i) {
+    if (nss_vec[i] != (uint32_t)(from_isa[i])) {
+      std::cout << "nss[" << i << "] is " << nss_vec[i] << ", but should be " << from_isa[i] << "." << std::endl;
+    }
 
-  check_type::check_pss(instance, pss_vec);
-  check_type::check_nss(instance, nss_vec);
+  }
+
+//  check_type::check_nss(instance, nss_vec);
 }
