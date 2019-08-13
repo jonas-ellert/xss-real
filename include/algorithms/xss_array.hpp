@@ -8,14 +8,20 @@ private:
   template <bool pss_enabled,
             bool nss_enabled,
             typename value_type,
-            typename index_type,
-            typename stack_type>
+            typename index_type>
   static void run_internal(const value_type* text,
                            [[maybe_unused]] index_type* pss,
                            [[maybe_unused]] index_type* nss,
-                           stack_type& stack,
                            const uint64_t n) {
-    auto compare = lce_naive<value_type>::get_suffix_compare(text, n);
+
+    std::stack<index_type> H;
+    std::stack<index_type> L;
+    H.push(0);
+    L.push(0);
+
+//    auto compare = lce_naive<value_type>::get_suffix_compare(text, n);
+    auto get_lce = lce_naive<value_type>::get_lce(text, n);
+
     if constexpr (pss_enabled) {
       pss[0] = n;
       pss[n - 1] = n;
@@ -27,37 +33,39 @@ private:
 
     // STACK MUST CONTAIN 0
 
-    uint64_t j;
-    for (uint64_t i = 1; i < n - 1; ++i) {
+    index_type j;
+    for (index_type i = 1; i < n - 1; ++i) {
       j = i - 1;
-      while (compare(i, j)) {
+
+      while (text[j] > text[i]) {
         if constexpr (nss_enabled)
           nss[j] = i;
-        if constexpr (!pss_enabled) {
-          stack.pop();
-          j = stack.top();
-        } else {
-          j = pss[j];
-        }
+        H.pop();
+        L.pop();
+        j = H.top();
       }
-      if constexpr (!pss_enabled) {
-        stack.push(i);
-      } else {
+
+      index_type lce = get_lce(j, i);
+
+      while (text[j + lce] > text[i + lce]) {
+        lce = std::min(lce, L.top());
+        if constexpr (nss_enabled)
+          nss[j] = i;
+        H.pop();
+        L.pop();
+        j = H.top();
+        lce = get_lce(j, i, lce);
+      }
+      
+      H.push(i);
+      L.push(lce);
+      if constexpr (pss_enabled)
         pss[i] = j;
-      }
     }
     if constexpr (nss_enabled) {
-      if constexpr (!pss_enabled) {
-        while ((j = stack.top()) > 0) {
-          nss[j] = n - 1;
-          stack.pop();
-        }
-      } else {
-        j = n - 2;
-        while (j > 0) {
-          nss[j] = n - 1;
-          j = pss[j];
-        }
+      while ((j = H.top()) > 0) {
+        nss[j] = n - 1;
+        H.pop();
       }
     }
   }
@@ -68,15 +76,15 @@ public:
                   index_type* pss,
                   index_type* nss,
                   const uint64_t n) {
-    std::stack<index_type> stack;
-    stack.push(0);
-
+    if (pss == nullptr && nss == nullptr) {
+      return;
+    }
     if (pss == nullptr) {
-      run_internal<false, true>(text, pss, nss, stack, n);
+      run_internal<false, true>(text, pss, nss, n);
     } else if (nss == nullptr) {
-      run_internal<true, false>(text, pss, nss, stack, n);
+      run_internal<true, false>(text, pss, nss, n);
     } else {
-      run_internal<true, true>(text, pss, nss, stack, n);
+      run_internal<true, true>(text, pss, nss, n);
     }
   }
 
@@ -92,6 +100,6 @@ public:
     run(text, (index_type*) nullptr, nss, n);
   }
 
-  template <typename value_type>
-  static void run(const value_type*, nullptr_t, nullptr_t, const uint64_t) {}
+  template <typename value_type, typename index_type>
+  static void run(const value_type*, nullptr_t, nullptr_t, const index_type) {}
 };
