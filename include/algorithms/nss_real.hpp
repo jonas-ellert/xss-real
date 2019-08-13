@@ -12,13 +12,6 @@ private:
 
     index_type* pss = nss; // alias
 
-    auto print_array = [&]() {
-      for (index_type l = 0; l < n; ++l) {
-        std::cout << nss[l] << ", ";
-      }
-      std::cout << std::endl;
-    };
-
     std::stack<index_type> L;
     L.push(0);
 
