@@ -49,7 +49,7 @@ public:
 
   unary_stack_dynamic(const uint64_t) : unary_stack_dynamic(){};
 
-  always_inline void push(const uint64_t value) {
+  xssr_always_inline void push(const uint64_t value) {
     if (top_value_ > 127) {
       data_right_.push(top_value_);
       data_right_.push(top_bit_);
@@ -66,11 +66,11 @@ public:
     top_value_ = value;
   }
 
-  always_inline uint64_t top() const {
+  xssr_always_inline uint64_t top() const {
     return top_value_;
   }
 
-  always_inline void pop() {
+  xssr_always_inline void pop() {
     if (top_bit_ == data_right_.top()) {
       data_right_.pop();
       top_value_ = data_right_.top();

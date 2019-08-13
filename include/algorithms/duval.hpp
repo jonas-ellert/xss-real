@@ -23,7 +23,7 @@
 #include <util/common.hpp>
 
 template <typename value_type>
-always_inline static std::pair<uint64_t, uint64_t>
+xssr_always_inline static std::pair<uint64_t, uint64_t>
 is_extended_lyndon_run(const value_type* text, const uint64_t n) {
   std::pair<uint64_t, uint64_t> result = {0, 0};
   uint64_t i = 0;
@@ -36,7 +36,7 @@ is_extended_lyndon_run(const value_type* text, const uint64_t n) {
         k++;
       j++;
     }
-    if (unlikely((j - k) > result.first)) {
+    if (xssr_unlikely((j - k) > result.first)) {
       result.first = j - k;
       result.second = i;
     }
@@ -56,7 +56,7 @@ is_extended_lyndon_run(const value_type* text, const uint64_t n) {
   //  std::endl;
 
   for (i = period; i < n; ++i) {
-    if (unlikely(text[i - period] != text[i]))
+    if (xssr_unlikely(text[i - period] != text[i]))
       return {0, 0};
   }
 

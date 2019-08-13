@@ -30,7 +30,7 @@ struct ctz_logarithmic;
 
 template <uint64_t bitwidth>
 struct ctz_lookup {
-  constexpr always_inline static uint64_t get(const uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get(const uint64_t x) {
     // force compile time construction
     static_assert(instance.table_[1] == 0);
     return instance.table_[x];
@@ -52,11 +52,11 @@ private:
 
 template <uint64_t bitwidth>
 struct ctz_linear {
-  constexpr always_inline static uint64_t get_safe(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_safe(uint64_t x) {
     return (x > 0) ? ctz_internal(x & -x) : 64;
   }
 
-  constexpr always_inline static uint64_t get_unsafe(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_unsafe(uint64_t x) {
     return ctz_internal(x & -x);
   }
 
@@ -72,7 +72,7 @@ private:
   constexpr static uint64_t b_ = std::max(bitwidth, (uint64_t) 1);
   constexpr static uint64_t mask_ = (1ULL << b_) - 1;
 
-  constexpr always_inline static uint64_t ctz_internal(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t ctz_internal(uint64_t x) {
     uint64_t result = 0;
     while ((x & mask_) == 0) {
       x >>= b_;
@@ -87,11 +87,11 @@ private:
 
 template <uint64_t bitwidth>
 struct ctz_logarithmic {
-  constexpr always_inline static uint64_t get_safe(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_safe(uint64_t x) {
     return (x > 0) ? ctz_internal(x & -x) : 64;
   }
 
-  constexpr always_inline static uint64_t get_unsafe(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_unsafe(uint64_t x) {
     return ctz_internal(x & -x);
   }
 
@@ -106,7 +106,7 @@ private:
   constexpr ctz_logarithmic() {}
   constexpr static uint64_t b_ = bitwidth >> 1;
 
-  constexpr always_inline static uint64_t ctz_internal(uint64_t x) {
+  constexpr xssr_always_inline static uint64_t ctz_internal(uint64_t x) {
     uint64_t bits = 32;
     uint64_t mask = (1ULL << 32) - 1;
     uint64_t result = 0;
@@ -126,11 +126,11 @@ private:
 };
 
 struct ctz_debruijn {
-  constexpr always_inline static uint64_t get_safe(const uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_safe(const uint64_t x) {
     return (x > 0) ? lookup_[((x & -x) * martins_constant) >> 58] : 64;
   }
 
-  constexpr always_inline static uint64_t get_unsafe(const uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_unsafe(const uint64_t x) {
     return lookup_[((x & -x) * martins_constant) >> 58];
   }
 

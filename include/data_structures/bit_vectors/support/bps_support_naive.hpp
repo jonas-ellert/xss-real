@@ -44,7 +44,7 @@ public:
     }
   }
 
-  always_inline uint64_t enclose(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t enclose(const uint64_t bps_idx) const {
     uint64_t result = bps_idx;
     uint64_t excess = (bp_[result]) ? 1 : 2;
     while (excess > 0) {
@@ -56,7 +56,7 @@ public:
     return result;
   }
 
-  always_inline uint64_t find_close(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t find_close(const uint64_t bps_idx) const {
     uint64_t result = bps_idx;
     uint64_t excess = (bp_[result]) ? 1 : 0;
     while (excess > 0) {
@@ -68,23 +68,23 @@ public:
     return result;
   }
 
-  always_inline uint64_t parent_distance(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t parent_distance(const uint64_t bps_idx) const {
     const uint64_t bps_idx_open_parent = enclose(bps_idx);
     return (bps_idx - bps_idx_open_parent + 1) >> 1;
   }
 
-  always_inline uint64_t subtree_size(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t subtree_size(const uint64_t bps_idx) const {
     const uint64_t bps_idx_close_nss = find_close(bps_idx);
     return (bps_idx_close_nss - bps_idx + 1) >> 1;
   }
 
-  always_inline uint64_t previous_value(const uint64_t preorder_number) const {
+  xssr_always_inline uint64_t previous_value(const uint64_t preorder_number) const {
     const uint64_t bps_idx_open_node = select_open_[preorder_number + 2];
     const uint64_t parent_dist = parent_distance(bps_idx_open_node);
     return preorder_number - parent_dist;
   }
 
-  always_inline uint64_t next_value(const uint64_t preorder_number) const {
+  xssr_always_inline uint64_t next_value(const uint64_t preorder_number) const {
     const uint64_t bps_idx_open_node = select_open_[preorder_number + 2];
     const uint64_t subtree = subtree_size(bps_idx_open_node);
     return preorder_number + subtree;

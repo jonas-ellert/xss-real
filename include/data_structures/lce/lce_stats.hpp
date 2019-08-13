@@ -32,13 +32,13 @@ public:
     int64_t longest_chain = 0;
     int64_t current_chain = 0;
 
-    always_inline void add(const uint64_t lce, bool smaller) {
+    xssr_always_inline void add(const uint64_t lce, bool smaller) {
       ++map[lce];
       current_chain += smaller ? 1 : -1;
       longest_chain = std::max(longest_chain, current_chain);
     }
 
-    always_inline void get_stats(uint64_t& cnt,
+    xssr_always_inline void get_stats(uint64_t& cnt,
                                  uint64_t& sum,
                                  uint64_t& min,
                                  uint64_t& max,
@@ -47,7 +47,7 @@ public:
       average = ((double) sum) / cnt;
     }
 
-    always_inline void
+    xssr_always_inline void
     get_stats(uint64_t& cnt,
               uint64_t& sum,
               uint64_t& min,
@@ -60,7 +60,7 @@ public:
     }
 
   private:
-    always_inline void
+    xssr_always_inline void
     get_base_stats(uint64_t& cnt, uint64_t& sum, uint64_t& min, uint64_t& max) {
       cnt = sum = 0;
       for (const auto& pair : map) {
@@ -75,7 +75,7 @@ public:
       max = (*end).first;
     }
 
-    always_inline void get_quantiles(
+    xssr_always_inline void get_quantiles(
         const uint64_t cnt,
         std::vector<std::pair<double, double>>& quantiles,
         std::vector<std::pair<double, double>>& additional_quantiles) {
@@ -147,11 +147,11 @@ public:
     distribution lce_distribution_;
     lce(const value_type* text, const uint64_t n)
         : text_(text), rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t l = 0;
-      while (text_[i + l] == text_[j + l] && likely(l < 1000))
+      while (text_[i + l] == text_[j + l] && xssr_likely(l < 1000))
         ++l;
-      l = likely(text_[i + l] != text_[j + l])
+      l = xssr_likely(text_[i + l] != text_[j + l])
               ? l
               : (l + rk_lce_.LCE(i + l, j + l));
       lce_distribution_.add(l, text_[std::min(i, j) + l] <
@@ -168,17 +168,17 @@ public:
         : text_(text),
           rk_lce_(text, n),
           lce_distribution_(rk_lce_.lce_distribution_) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t lce = rk_lce_(i, j);
       return text_[i + lce] < text_[j + lce];
     }
   };
 
-  always_inline static lce get_lce(const value_type* text, const uint64_t n) {
+  xssr_always_inline static lce get_lce(const value_type* text, const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare get_suffix_compare(const value_type* text,
+  xssr_always_inline static suffix_compare get_suffix_compare(const value_type* text,
                                                          const uint64_t n) {
     return suffix_compare(text, n);
   }

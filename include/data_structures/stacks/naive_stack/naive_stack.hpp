@@ -34,7 +34,7 @@ private:
   struct block_manager {
     value_type* next_block = nullptr;
 
-    always_inline value_type* new_block() {
+    xssr_always_inline value_type* new_block() {
       value_type* result = next_block;
       next_block = nullptr;
       return (result != nullptr)
@@ -42,7 +42,7 @@ private:
                  : static_cast<value_type*>(malloc(block_size_bytes));
     }
 
-    always_inline void delete_block(value_type* block) {
+    xssr_always_inline void delete_block(value_type* block) {
       delete next_block;
       next_block = block;
     }
@@ -64,12 +64,12 @@ public:
     top_block[top_idx] = 0ULL; // always contains 0;
   }
 
-  always_inline value_type top() const {
+  xssr_always_inline value_type top() const {
     return top_block[top_idx];
   }
 
-  always_inline void pop() {
-    if (unlikely(top_idx == 0)) {
+  xssr_always_inline void pop() {
+    if (xssr_unlikely(top_idx == 0)) {
       top_idx = block_size;
       bmgr.delete_block(top_block);
       top_block = blocks.back();
@@ -79,9 +79,9 @@ public:
     --top_idx;
   }
 
-  always_inline void push(value_type value) {
+  xssr_always_inline void push(value_type value) {
     ++top_idx;
-    if (unlikely(top_idx == block_size)) {
+    if (xssr_unlikely(top_idx == block_size)) {
       top_idx = 0;
       blocks.push_back(top_block);
       top_block = bmgr.new_block();
@@ -97,7 +97,7 @@ public:
     }
   }
 
-  always_inline uint64_t size() const {
+  xssr_always_inline uint64_t size() const {
     return top_idx + big_size + 1;
   }
 
@@ -116,19 +116,19 @@ public:
     data_.push(word_all_zero);
   }
 
-  always_inline value_type top() const {
+  xssr_always_inline value_type top() const {
     return data_.top();
   }
 
-  always_inline void pop() {
+  xssr_always_inline void pop() {
     data_.pop();
   }
 
-  always_inline void push(value_type value) {
+  xssr_always_inline void push(value_type value) {
     data_.push(value);
   }
 
-  always_inline uint64_t size() const {
+  xssr_always_inline uint64_t size() const {
     return data_.size();
   }
 

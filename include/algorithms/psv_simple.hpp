@@ -33,7 +33,7 @@ public:
     struct compare_values {
       const value_type* text_;
       compare_values(const value_type* text) : text_(text) {}
-      always_inline bool operator()(const uint64_t i, const uint64_t j) const {
+      xssr_always_inline bool operator()(const uint64_t i, const uint64_t j) const {
         return (text_[i] <= text_[j]);
       }
     };

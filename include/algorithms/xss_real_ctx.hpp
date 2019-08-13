@@ -52,8 +52,8 @@ private:
   uint64_t current_word_size_;
   uint64_t current_word_data_index_;
 
-  always_inline void automatic_new_word() {
-    if (unlikely(current_word_size_ == 64)) {
+  xssr_always_inline void automatic_new_word() {
+    if (xssr_unlikely(current_word_size_ == 64)) {
       ++current_word_data_index_;
       current_word_size_ = 0;
     }
@@ -70,60 +70,60 @@ public:
         current_word_size_(0),
         current_word_data_index_(0) {}
 
-  always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
     lcp_stack_.push_with_lcp(idx, lcp);
   }
 
-  always_inline void push_without_lcp(const uint64_t idx) {
+  xssr_always_inline void push_without_lcp(const uint64_t idx) {
     lcp_stack_.push_without_lcp(idx);
   }
 
-  always_inline void pop_with_lcp() {
+  xssr_always_inline void pop_with_lcp() {
     lcp_stack_.pop_with_lcp();
   }
 
-  always_inline void pop_without_lcp() {
+  xssr_always_inline void pop_without_lcp() {
     lcp_stack_.pop_without_lcp();
   }
 
-  always_inline uint64_t top_idx() const {
+  xssr_always_inline uint64_t top_idx() const {
     return lcp_stack_.top_idx();
   }
 
-  always_inline uint64_t top_lcp() const {
+  xssr_always_inline uint64_t top_lcp() const {
     return lcp_stack_.top_lcp();
   }
 
   template <stack_strategy str = strategy>
-  always_inline
+  xssr_always_inline
       typename std::enable_if<str == strategy && strategy == DYNAMIC_BUFFERED,
                               uint64_t>::type
       size() const {
     return lcp_stack_.size();
   }
 
-  always_inline void open() {
+  xssr_always_inline void open() {
     data_[current_word_data_index_] |= (lmask >> current_word_size_);
     current_word_size_++;
     automatic_new_word();
   }
 
-  always_inline void close() {
+  xssr_always_inline void close() {
     current_word_size_++;
     automatic_new_word();
   }
 
-  always_inline void soft_set_word(const uint64_t idx,
+  xssr_always_inline void soft_set_word(const uint64_t idx,
                                    const uint64_t word) const {
     const uint64_t bit_idx = mod64(idx);
-    if (likely(bit_idx > 0)) {
+    if (xssr_likely(bit_idx > 0)) {
       data_[div64(idx)] |= word >> bit_idx;
       data_[div64(idx) + 1] |= word << (64 - bit_idx);
     } else
       data_[div64(idx)] = word;
   }
 
-  always_inline void append_copy_unsafe(const uint64_t source,
+  xssr_always_inline void append_copy_unsafe(const uint64_t source,
                                         const uint64_t length) {
     uint64_t dest = current_length();
     for (uint64_t i = 0; i < length; i += 64) {
@@ -136,7 +136,7 @@ public:
   }
 
   // length must be at least 64!
-  always_inline void append_copy(const uint64_t source, const uint64_t length) {
+  xssr_always_inline void append_copy(const uint64_t source, const uint64_t length) {
     uint64_t dest = current_length();
     uint64_t distance = dest - source;
     uint64_t start_word = bv_.get_word(source);
@@ -155,7 +155,7 @@ public:
     }
   }
 
-  always_inline void extend_increasing_run(const uint64_t period,
+  xssr_always_inline void extend_increasing_run(const uint64_t period,
                                            const uint64_t repetitions) {
     const uint64_t copy_length_per_repetition = 2 * period - 1;
     const uint64_t copy_length_total = repetitions * copy_length_per_repetition;
@@ -163,7 +163,7 @@ public:
     append_copy(copy_from, copy_length_total);
   }
 
-  always_inline void extend_decreasing_run(const uint64_t period,
+  xssr_always_inline void extend_decreasing_run(const uint64_t period,
                                            const uint64_t repetitions) {
     const uint64_t copy_length_per_repetition = 2 * period;
     const uint64_t copy_length_total = repetitions * copy_length_per_repetition;
@@ -171,11 +171,11 @@ public:
     append_copy(copy_from, copy_length_total);
   }
 
-  always_inline bool operator[](uint64_t index) const {
+  xssr_always_inline bool operator[](uint64_t index) const {
     return (data_[div64(index)] & (lmask >> mod64(index)));
   }
 
-  always_inline uint64_t current_length() const {
+  xssr_always_inline uint64_t current_length() const {
     return mul64(current_word_data_index_) + current_word_size_;
   }
 };

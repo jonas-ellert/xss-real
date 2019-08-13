@@ -21,12 +21,12 @@
 #pragma once
 
 struct ctz_builtin {
-  constexpr always_inline static uint64_t get_safe(const uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_safe(const uint64_t x) {
     return (x > 0) ? __builtin_ctzl(x) : 64;
   }
 
   // undefined for x = 0
-  constexpr always_inline static uint64_t get_unsafe(const uint64_t x) {
+  constexpr xssr_always_inline static uint64_t get_unsafe(const uint64_t x) {
     return __builtin_ctzl(x);
   }
 

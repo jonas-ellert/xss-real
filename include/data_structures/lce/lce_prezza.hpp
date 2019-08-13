@@ -29,7 +29,7 @@ public:
   struct lce {
     rklce::rk_lce rk_lce_;
     lce(const value_type* text, const uint64_t n) : rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       return rk_lce_.LCE(i, j);
     }
   };
@@ -39,17 +39,17 @@ public:
     lce rk_lce_;
     suffix_compare(const value_type* text, const uint64_t n)
         : text_(text), rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t lce = rk_lce_(i, j);
       return text_[i + lce] < text_[j + lce];
     }
   };
 
-  always_inline static lce get_lce(const value_type* text, const uint64_t n) {
+  xssr_always_inline static lce get_lce(const value_type* text, const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare get_suffix_compare(const value_type* text,
+  xssr_always_inline static suffix_compare get_suffix_compare(const value_type* text,
                                                          const uint64_t n) {
     return suffix_compare(text, n);
   }

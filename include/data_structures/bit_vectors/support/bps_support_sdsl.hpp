@@ -47,23 +47,23 @@ public:
   bps_support_sdsl(const bp_type& bp)
       : bp_(bp), sdsl_bp_(to_sdsl(bp)), sada_(&sdsl_bp_) {}
 
-  always_inline uint64_t parent_distance(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t parent_distance(const uint64_t bps_idx) const {
     const uint64_t bps_idx_open_parent = sada_.enclose(bps_idx);
     return (bps_idx - bps_idx_open_parent + 1) >> 1;
   }
 
-  always_inline uint64_t subtree_size(const uint64_t bps_idx) const {
+  xssr_always_inline uint64_t subtree_size(const uint64_t bps_idx) const {
     const uint64_t bps_idx_close_nss = sada_.find_close(bps_idx);
     return (bps_idx_close_nss - bps_idx + 1) >> 1;
   }
 
-  always_inline uint64_t previous_value(const uint64_t preorder_number) const {
+  xssr_always_inline uint64_t previous_value(const uint64_t preorder_number) const {
     const uint64_t bps_idx_open_node = sada_.select(preorder_number + 2);
     const uint64_t parent_dist = parent_distance(bps_idx_open_node);
     return preorder_number - parent_dist;
   }
 
-  always_inline uint64_t next_value(const uint64_t preorder_number) const {
+  xssr_always_inline uint64_t next_value(const uint64_t preorder_number) const {
     const uint64_t bps_idx_open_node = sada_.select(preorder_number + 2);
     const uint64_t subtree = subtree_size(bps_idx_open_node);
     return preorder_number + subtree;

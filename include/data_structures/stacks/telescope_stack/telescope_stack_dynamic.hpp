@@ -47,7 +47,7 @@ public:
 
   telescope_stack_dynamic(const uint64_t) : telescope_stack_dynamic() {}
 
-  always_inline void push(const uint64_t value) {
+  xssr_always_inline void push(const uint64_t value) {
     uint64_t offset = value - top_value_;
     if (offset > 127) {
       data_right_.push(top_value_);
@@ -65,11 +65,11 @@ public:
     top_value_ = value;
   }
 
-  always_inline uint64_t top() const {
+  xssr_always_inline uint64_t top() const {
     return top_value_;
   }
 
-  always_inline void pop() {
+  xssr_always_inline void pop() {
     if (top_bit_ == data_right_.top()) {
       data_right_.pop();
       top_value_ = data_right_.top();

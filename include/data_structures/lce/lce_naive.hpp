@@ -28,7 +28,7 @@ public:
   struct lce {
     const value_type* text_;
     lce(const value_type* text) : text_(text) {}
-    always_inline uint64_t operator()(const uint64_t i,
+    xssr_always_inline uint64_t operator()(const uint64_t i,
                                       const uint64_t j,
                                       uint64_t lcp = 0) const {
       while (text_[i + lcp] == text_[j + lcp])
@@ -40,7 +40,7 @@ public:
   struct suffix_compare {
     const value_type* text_;
     suffix_compare(const value_type* text) : text_(text) {}
-    always_inline uint64_t operator()(const uint64_t i,
+    xssr_always_inline uint64_t operator()(const uint64_t i,
                                       const uint64_t j) const {
       uint64_t result = 0;
       while (text_[i + result] == text_[j + result])
@@ -49,12 +49,12 @@ public:
     }
   };
 
-  always_inline static lce get_lce(const value_type* text,
+  xssr_always_inline static lce get_lce(const value_type* text,
                                    [[maybe_unused]] const uint64_t n = 0) {
     return lce(text);
   }
 
-  always_inline static suffix_compare
+  xssr_always_inline static suffix_compare
   get_suffix_compare(const value_type* text,
                      [[maybe_unused]] const uint64_t n = 0) {
     return suffix_compare(text);

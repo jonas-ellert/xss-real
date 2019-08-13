@@ -139,7 +139,7 @@ public:
    * complexity: O(1)
    *
    */
-  always_inline char operator[](uint64_t i) {
+  xssr_always_inline char operator[](uint64_t i) {
 
     auto ib = i * log2_sigma + pad;
 
@@ -163,7 +163,7 @@ public:
    * - O(log n) otherwise
    *
    */
-  always_inline uint64_t LCE(uint64_t i, uint64_t j) {
+  xssr_always_inline uint64_t LCE(uint64_t i, uint64_t j) {
 
     auto ib = i * log2_sigma + pad;
     auto jb = j * log2_sigma + pad;
@@ -174,7 +174,7 @@ public:
   /*
    * O(n)-time implementation of LCE
    */
-  always_inline uint64_t LCE_naive(uint64_t i, uint64_t j) {
+  xssr_always_inline uint64_t LCE_naive(uint64_t i, uint64_t j) {
 
     if (i == j)
       return n - i;
@@ -196,7 +196,7 @@ public:
    * Time: O(log n)
    *
    */
-  always_inline std::function<bool(uint64_t, uint64_t)> lex_less_than() {
+  xssr_always_inline std::function<bool(uint64_t, uint64_t)> lex_less_than() {
 
     return [&](uint64_t i, uint64_t j) {
       if (i == j)
@@ -222,20 +222,20 @@ public:
     };
   }
 
-  always_inline uint64_t bit_size() {
+  xssr_always_inline uint64_t bit_size() {
 
     return bin_lce.bit_size() + sizeof(this) * 8 + char_to_uint.size() * 8 +
            uint_to_char.size() * 8;
   }
 
-  always_inline uint64_t length() {
+  xssr_always_inline uint64_t length() {
     return n;
   }
-  always_inline uint64_t size() {
+  xssr_always_inline uint64_t size() {
     return n;
   }
 
-  always_inline uint16_t alphabet_size() {
+  xssr_always_inline uint16_t alphabet_size() {
     return sigma;
   }
 

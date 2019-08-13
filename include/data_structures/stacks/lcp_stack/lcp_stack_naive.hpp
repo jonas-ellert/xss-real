@@ -39,29 +39,29 @@ public:
     //    lcps_.push(0);
   }
 
-  always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
     indices_.push(idx);
     lcps_.push(lcp);
   }
 
-  always_inline void push_without_lcp(const uint64_t idx) {
+  xssr_always_inline void push_without_lcp(const uint64_t idx) {
     indices_.push(idx);
   }
 
-  always_inline void pop_with_lcp() {
+  xssr_always_inline void pop_with_lcp() {
     indices_.pop();
     lcps_.pop();
   }
 
-  always_inline void pop_without_lcp() {
+  xssr_always_inline void pop_without_lcp() {
     indices_.pop();
   }
 
-  always_inline uint64_t top_idx() const {
+  xssr_always_inline uint64_t top_idx() const {
     return indices_.top();
   }
 
-  always_inline uint64_t top_lcp() const {
+  xssr_always_inline uint64_t top_lcp() const {
     return lcps_.top();
   }
 

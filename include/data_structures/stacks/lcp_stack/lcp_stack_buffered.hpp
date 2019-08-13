@@ -37,7 +37,7 @@ private:
 
   uint64_t size_ = 0;
 
-  always_inline uint64_t get_max_size(const uint64_t n) {
+  xssr_always_inline uint64_t get_max_size(const uint64_t n) {
     const uint64_t bytes = div<8>(n);
     const uint64_t words = div<8>(bytes);
     const uint64_t pairs = div<2>(words);
@@ -56,19 +56,19 @@ public:
     lcps_.push_front(0ULL);
   }
 
-  always_inline uint64_t top_idx() const {
+  xssr_always_inline uint64_t top_idx() const {
     return indices_.back();
   }
 
-  always_inline uint64_t top_lcp() const {
+  xssr_always_inline uint64_t top_lcp() const {
     return lcps_.back();
   }
 
-  always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
     indices_.push_back(idx);
     lcps_.push_back(lcp);
-    if (unlikely(indices_.size() == buffer_size_)) {
-      if (unlikely(indices_.front() == 0)) {
+    if (xssr_unlikely(indices_.size() == buffer_size_)) {
+      if (xssr_unlikely(indices_.front() == 0)) {
         indices_.pop_front();
         lcps_.pop_front();
         ++size_;
@@ -82,21 +82,21 @@ public:
     }
   }
 
-  always_inline void push_without_lcp(const uint64_t idx) {
+  xssr_always_inline void push_without_lcp(const uint64_t idx) {
     indices_.push_back(idx);
   }
 
-  always_inline void pop_with_lcp() {
+  xssr_always_inline void pop_with_lcp() {
     indices_.pop_back();
     lcps_.pop_back();
-    if (unlikely(indices_.size() == 0)) {
+    if (xssr_unlikely(indices_.size() == 0)) {
       for (uint64_t i = 0; i < half_buffer_size_; ++i) {
         indices_.push_front(lcp_stack_.top_idx());
         lcps_.push_front(lcp_stack_.top_lcp());
         lcp_stack_.pop_with_lcp();
       }
       size_ -= half_buffer_size_;
-      if (unlikely(lcp_stack_.top_idx() == 0)) {
+      if (xssr_unlikely(lcp_stack_.top_idx() == 0)) {
         indices_.push_front(0);
         lcps_.push_front(0);
         --size_;
@@ -104,11 +104,11 @@ public:
     }
   }
 
-  always_inline void pop_without_lcp() {
+  xssr_always_inline void pop_without_lcp() {
     indices_.pop_back();
   }
 
-  always_inline uint64_t size() const {
+  xssr_always_inline uint64_t size() const {
     return size_ + indices_.size();
   }
 

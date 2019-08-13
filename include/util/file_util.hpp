@@ -99,7 +99,7 @@ static void standardize(std::vector<char_t>& vector) {
              "structures."
           << std::endl;
       for (auto& character : vector)
-        if (unlikely(character == min_val))
+        if (xssr_unlikely(character == min_val))
           ++character;
     } else {
       std::cout << "[STANDARDIZE]         Text contains min_chars, but does "

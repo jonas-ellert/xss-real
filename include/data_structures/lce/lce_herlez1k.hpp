@@ -47,11 +47,11 @@ public:
       delete copy_;
     }
 
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t l = 0;
-      while (text_[i + l] == text_[j + l] && likely(l < 1000))
+      while (text_[i + l] == text_[j + l] && xssr_likely(l < 1000))
         ++l;
-      return likely(text_[i + l] != text_[j + l])
+      return xssr_likely(text_[i + l] != text_[j + l])
                  ? l
                  : (l + prezza_.lce(i + l, j + l));
     }
@@ -67,7 +67,7 @@ public:
     suffix_compare(const vt* text, const uint64_t n)
         : text_(text), prezzalce_(text, n) {}
 
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       const uint64_t lce_result = prezzalce_(i, j);
       return text_[i + lce_result] < text_[j + lce_result];
     }
@@ -76,12 +76,12 @@ public:
     suffix_compare& operator=(const suffix_compare&) = delete;
   };
 
-  always_inline static lce<value_type> get_lce(const value_type* text,
+  xssr_always_inline static lce<value_type> get_lce(const value_type* text,
                                                const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare<value_type>
+  xssr_always_inline static suffix_compare<value_type>
   get_suffix_compare(const value_type* text, const uint64_t n) {
     return suffix_compare(text, n);
   }

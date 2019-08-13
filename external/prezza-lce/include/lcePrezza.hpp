@@ -11,11 +11,14 @@
 #include "lcePrezzaUtil.hpp"
 
 #define lce_unlikely(x)    __builtin_expect(!!(x), 0)
+
 #ifndef always_inline
 #define lce_always_inline __attribute__((always_inline))
 #else
 #define lce_always_inline always_inline
 #endif
+
+
 /* This class builds Prezza's in-place LCE data structure and
  * answers LCE-queries in O(log(n)). */
 
@@ -40,7 +43,7 @@ public:
 
   /* Fast LCE-query in O(log(n)) time */
   uint64_t lce(const uint64_t i, const uint64_t j) {
-    if (unlikely(i == j)) {
+    if (lce_unlikely(i == j)) {
       return textLengthInBytes - i;
     }
 
@@ -116,7 +119,7 @@ public:
     while(exp != 0) {
       --exp;
       dist /= 2;
-      if (unlikely(dist > maxRest)) {
+      if (lce_unlikely(dist > maxRest)) {
         continue;
       }
       if(fingerprintExp(i2, exp) == fingerprintExp(j2, exp)) {
@@ -141,7 +144,7 @@ public:
 
   int isSmallerSuffix(const uint64_t i, const uint64_t j) {
     uint64_t lceS = lce(i, j);
-    if(unlikely((i + lceS + 1 == textLengthInBytes) || (j + lceS + 1 == textLengthInBytes))) {
+    if(lce_unlikely((i + lceS + 1 == textLengthInBytes) || (j + lceS + 1 == textLengthInBytes))) {
       return true;
     }
     return (operator[](i + lceS) < operator[](j + lceS));
@@ -156,10 +159,10 @@ private:
 
   /* Returns the i'th block. A block contains 8 character. */
   uint64_t getBlock(const uint64_t i) {
-    if (unlikely(i > textLengthInBlocks)) {
+    if (lce_unlikely(i > textLengthInBlocks)) {
       return 0;
     }
-    if (unlikely(i == 0)) {
+    if (lce_unlikely(i == 0)) {
       if(fingerprints[0] >= 0x8000000000000000ULL) {
         return fingerprints[0] - 0x8000000000000000ULL + prime;
       } else {
@@ -184,7 +187,7 @@ private:
 
   /* Calculates the fingerprint of T[from, from + 2^exp) */
   uint64_t fingerprintExp(const uint64_t from, const int exp) {
-    if (unlikely(from == 0)) {
+    if (lce_unlikely(from == 0)) {
       return fingerprintTo((1 << exp)-1); // ie if exponent = 3, we want P[0..7];
     } else {
       uint128_t fingerprintToI = fingerprintTo(from - 1);

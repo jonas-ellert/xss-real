@@ -53,49 +53,49 @@ public:
     delete data_;
   }
 
-  always_inline void set_one(const uint64_t idx) {
+  xssr_always_inline void set_one(const uint64_t idx) {
     data_[div64(idx)] |= (word_left_one >> (mod64(idx)));
   }
 
-  always_inline void set_zero(const uint64_t idx) {
+  xssr_always_inline void set_zero(const uint64_t idx) {
     data_[div64(idx)] &= ~(word_left_one >> (mod64(idx)));
   }
 
   template <bool value>
-  always_inline void set(const uint64_t idx) {
+  xssr_always_inline void set(const uint64_t idx) {
     if constexpr (value)
       set_one(idx);
     else
       set_zero(idx);
   }
 
-  always_inline void set(const uint64_t idx, const bool value) {
+  xssr_always_inline void set(const uint64_t idx, const bool value) {
     if (value)
       set_one(idx);
     else
       set_zero(idx);
   }
 
-  always_inline bool operator[](const uint64_t idx) const {
+  xssr_always_inline bool operator[](const uint64_t idx) const {
     return data_[div64(idx)] & (word_left_one >> (mod64(idx)));
   }
 
-  always_inline bool get(const uint64_t idx) const {
+  xssr_always_inline bool get(const uint64_t idx) const {
     return operator[](idx);
   }
 
-  always_inline uint64_t get_word(const uint64_t idx) const {
+  xssr_always_inline uint64_t get_word(const uint64_t idx) const {
     const uint64_t bit_idx = mod64(idx);
-    if (likely(bit_idx > 0))
+    if (xssr_likely(bit_idx > 0))
       return (data_[div64(idx)] << bit_idx) |
              (data_[div64(idx) + 1] >> (64 - bit_idx));
     else
       return data_[div64(idx)];
   }
 
-  always_inline void set_word(const uint64_t idx, const uint64_t word) const {
+  xssr_always_inline void set_word(const uint64_t idx, const uint64_t word) const {
     const uint64_t bit_idx = mod64(idx);
-    if (likely(bit_idx > 0)) {
+    if (xssr_likely(bit_idx > 0)) {
       data_[div64(idx)] &= word_all_one << (64 - bit_idx);
       data_[div64(idx)] |= word >> bit_idx;
       data_[div64(idx) + 1] &= word_all_one >> bit_idx;
@@ -104,33 +104,33 @@ public:
       data_[div64(idx)] = word;
   }
 
-  always_inline uint64_t size() const {
+  xssr_always_inline uint64_t size() const {
     return n_;
   }
 
-  always_inline uint64_t* data() {
+  xssr_always_inline uint64_t* data() {
     return data_;
   }
 
-  always_inline const uint64_t* data() const {
+  xssr_always_inline const uint64_t* data() const {
     return data_;
   }
 
-  always_inline uint64_t data_size() const {
+  xssr_always_inline uint64_t data_size() const {
     return data_size_;
   }
 
-  always_inline bool operator==(const bit_vector& other) const {
+  xssr_always_inline bool operator==(const bit_vector& other) const {
     if (n_ != other.n_)
       return false;
     for (uint64_t i = 0; i < data_size_; ++i) {
-      if (unlikely(data_[i] != other.data_[i]))
+      if (xssr_unlikely(data_[i] != other.data_[i]))
         return false;
     }
     return true;
   }
 
-  always_inline bool operator!=(const bit_vector& other) const {
+  xssr_always_inline bool operator!=(const bit_vector& other) const {
     return !operator==(other);
   }
 

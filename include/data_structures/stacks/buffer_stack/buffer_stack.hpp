@@ -58,7 +58,7 @@ private:
   uint64_t* back_mem_;
   uint64_t back_idx_;
 
-  always_inline uint64_t get_max_buffer_blocks(const uint64_t number_of_bits) {
+  xssr_always_inline uint64_t get_max_buffer_blocks(const uint64_t number_of_bits) {
     const uint64_t blocks =
         (number_of_bits + block_size_bits - 1) / block_size_bits;
     return (((blocks + 1) >> 1) << 1);
@@ -87,16 +87,16 @@ public:
     }
   }
 
-  always_inline uint64_t top() const {
+  xssr_always_inline uint64_t top() const {
     return back_mem_[back_idx_];
   }
 
-  always_inline void push(const uint64_t value) {
-    if (unlikely(back_idx_ == block_size - 1)) {
+  xssr_always_inline void push(const uint64_t value) {
+    if (xssr_unlikely(back_idx_ == block_size - 1)) {
 
       std::cout << "PUSH BLOCK" << std::endl;
 
-      if (unlikely(current_buffer_blocks_ == max_buffer_blocks_)) {
+      if (xssr_unlikely(current_buffer_blocks_ == max_buffer_blocks_)) {
         std::cout << "PUSH MOVE" << std::endl;
 
         const uint64_t first_i = ((current_data_blocks_ == 0) ? 1 : 0);
@@ -132,12 +132,12 @@ public:
     back_mem_[++back_idx_] = value;
   }
 
-  always_inline void pop() {
-    if (unlikely(back_idx_ == 0)) {
+  xssr_always_inline void pop() {
+    if (xssr_unlikely(back_idx_ == 0)) {
 
       std::cout << "POP BLOCK" << std::endl;
 
-      if (unlikely(current_buffer_blocks_ == 1)) {
+      if (xssr_unlikely(current_buffer_blocks_ == 1)) {
 
         std::cout << "POP MOVE " << current_data_blocks_ << std::endl;
 

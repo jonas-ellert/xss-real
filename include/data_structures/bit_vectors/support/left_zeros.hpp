@@ -27,9 +27,9 @@ class left_zeros {
 private:
   const uint64_t* data_;
 
-  always_inline uint64_t get_left_word(const uint64_t idx) const {
+  xssr_always_inline uint64_t get_left_word(const uint64_t idx) const {
     const uint64_t bit_idx = mod64(idx);
-    if (likely(bit_idx > 0))
+    if (xssr_likely(bit_idx > 0))
       return (data_[div64(idx)] >> (64 - bit_idx)) |
              (data_[div64(idx) - 1] << (bit_idx));
     else
@@ -49,7 +49,7 @@ public:
   //    return result + ctz_type::get(word);
   //  }
 
-  always_inline uint64_t get128(uint64_t idx) const {
+  xssr_always_inline uint64_t get128(uint64_t idx) const {
     const uint64_t word = get_left_word(idx);
     return (word > 0) ? ctz_type::get_unsafe(word)
                       : (64 + ctz_type::get_unsafe(get_left_word(idx - 64)));

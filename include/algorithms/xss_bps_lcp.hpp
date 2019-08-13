@@ -73,7 +73,7 @@ private:
           ctx.close();
         }
 
-        if (unlikely(next_lcp == lcp)) {
+        if (xssr_unlikely(next_lcp == lcp)) {
           lcp = get_lcp(ctx.top_idx(), i, lcp);
         } else {
           lcp = next_lcp;

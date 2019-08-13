@@ -122,11 +122,11 @@ struct nss_check {
       }
 
       for(uint64_t j = i + 1; j < nss; ++j) {
-        if (unlikely(is_smaller(text, j, i))) {
+        if (xssr_unlikely(is_smaller(text, j, i))) {
           report_missed_xss(text, i, j, nss, error_count);
         }
       }
-      if (unlikely(is_larger(text, nss, i))) {
+      if (xssr_unlikely(is_larger(text, nss, i))) {
         report_wrong_xss(text, i, nss, error_count);
       }
     }
@@ -142,11 +142,11 @@ struct nss_check {
       }
 
       for(uint64_t j = i - 1; j > pss; --j) {
-        if (unlikely(is_smaller(text, j, i))) {
+        if (xssr_unlikely(is_smaller(text, j, i))) {
           report_missed_xss(text, i, j, pss, error_count);
         }
       }
-      if (unlikely(is_larger(text, pss, i))) {
+      if (xssr_unlikely(is_larger(text, pss, i))) {
         report_wrong_xss(text, i, pss, error_count);
       }
     }

@@ -44,7 +44,7 @@ public:
     static_assert(strategy == STATIC || strategy == DYNAMIC);
   }
 
-  always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
     indices_.push(idx);
     // add +1 to allow zeros
     if (lcp <= top_lcp_) {
@@ -57,11 +57,11 @@ public:
     top_lcp_ = lcp;
   }
 
-  always_inline void push_without_lcp(const uint64_t idx) {
+  xssr_always_inline void push_without_lcp(const uint64_t idx) {
     indices_.push(idx);
   }
 
-  always_inline void pop_with_lcp() {
+  xssr_always_inline void pop_with_lcp() {
     indices_.pop();
     if (type_stack_.top()) {
       top_lcp_ += lcps_.top() - 1;
@@ -72,15 +72,15 @@ public:
     type_stack_.pop();
   }
 
-  always_inline void pop_without_lcp() {
+  xssr_always_inline void pop_without_lcp() {
     indices_.pop();
   }
 
-  always_inline uint64_t top_idx() const {
+  xssr_always_inline uint64_t top_idx() const {
     return indices_.top();
   }
 
-  always_inline uint64_t top_lcp() const {
+  xssr_always_inline uint64_t top_lcp() const {
     return top_lcp_;
   }
 

@@ -50,7 +50,7 @@ public:
     data_[jmp_idx_] = 0ULL - 1;
   }
 
-  always_inline void push(const uint64_t value) {
+  xssr_always_inline void push(const uint64_t value) {
     if (top_value_ > 127) {
       data_[--jmp_idx_] = top_value_;
       data_[--jmp_idx_] = top_bit_;
@@ -61,11 +61,11 @@ public:
     top_value_ = value;
   }
 
-  always_inline uint64_t top() const {
+  xssr_always_inline uint64_t top() const {
     return top_value_;
   }
 
-  always_inline void pop() {
+  xssr_always_inline void pop() {
     if (top_bit_ == data_[jmp_idx_]) {
       top_value_ = data_[jmp_idx_ + 1];
       data_[jmp_idx_] = data_[jmp_idx_ + 1] = 0;

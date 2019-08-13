@@ -34,7 +34,7 @@ private:
   telescope_stack_dynamic<ctz_type> tele_stack_;
   std::deque<uint64_t> elements_;
 
-  always_inline uint64_t get_max_size(const uint64_t n) {
+  xssr_always_inline uint64_t get_max_size(const uint64_t n) {
     const uint64_t bytes = div<8>(n);
     const uint64_t words = div<8>(bytes);
     return std::max(((words + 1) >> 1) << 1, (uint64_t) 65536); // at least 1MiB
@@ -46,14 +46,14 @@ public:
     elements_.push_front(0ULL);
   }
 
-  always_inline uint64_t top() const {
+  xssr_always_inline uint64_t top() const {
     return elements_.back();
   }
 
-  always_inline void push(const uint64_t e) {
+  xssr_always_inline void push(const uint64_t e) {
     elements_.push_back(e);
-    if (unlikely(elements_.size() == buffer_size_)) {
-      if (unlikely(elements_.front() == 0)) {
+    if (xssr_unlikely(elements_.size() == buffer_size_)) {
+      if (xssr_unlikely(elements_.front() == 0)) {
         elements_.pop_front();
       }
       for (uint64_t i = 0; i < half_buffer_size_; ++i) {
@@ -63,14 +63,14 @@ public:
     }
   }
 
-  always_inline void pop() {
+  xssr_always_inline void pop() {
     elements_.pop_back();
-    if (unlikely(elements_.size() == 0)) {
+    if (xssr_unlikely(elements_.size() == 0)) {
       for (uint64_t i = 0; i < half_buffer_size_; ++i) {
         elements_.push_front(tele_stack_.top());
         tele_stack_.pop();
       }
-      if (unlikely(tele_stack_.top() == 0)) {
+      if (xssr_unlikely(tele_stack_.top() == 0)) {
         elements_.push_front(0);
       }
     }

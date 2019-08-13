@@ -32,8 +32,8 @@ private:
   uint64_t current_word_size_;
   uint64_t current_word_data_index_;
 
-  always_inline void automatic_new_word() {
-    if (unlikely(current_word_size_ == 64)) {
+  xssr_always_inline void automatic_new_word() {
+    if (xssr_unlikely(current_word_size_ == 64)) {
       ++current_word_data_index_;
       current_word_size_ = 0;
     }
@@ -46,22 +46,22 @@ public:
         current_word_size_(0),
         current_word_data_index_(0) {}
 
-  always_inline void open() {
+  xssr_always_inline void open() {
     data_[current_word_data_index_] |= (lmask >> current_word_size_);
     current_word_size_++;
     automatic_new_word();
   }
 
-  always_inline void close() {
+  xssr_always_inline void close() {
     current_word_size_++;
     automatic_new_word();
   }
 
-  always_inline bool operator[](uint64_t index) const {
+  xssr_always_inline bool operator[](uint64_t index) const {
     return (data_[div64(index)] & (lmask >> mod64(index)));
   }
 
-  always_inline uint64_t current_length() const {
+  xssr_always_inline uint64_t current_length() const {
     return mul64(current_word_data_index_) + current_word_size_;
   }
 };

@@ -143,7 +143,7 @@ public:
     P = packed_vector_127(P_vec);
   }
 
-  always_inline uint64_t bit_size() {
+  xssr_always_inline uint64_t bit_size() {
 
     return P.bit_size() + Q1.bit_size() + sizeof(this) * 8;
   }
@@ -154,7 +154,7 @@ public:
    * complexity: O(1)
    *
    */
-  always_inline bool operator[](uint64_t i) {
+  xssr_always_inline bool operator[](uint64_t i) {
 
     assert(i < n);
 
@@ -170,7 +170,7 @@ public:
    * block must fit in a memory word: len <= 128
    *
    */
-  always_inline uint128 operator()(uint64_t i, uint64_t len = 128) {
+  xssr_always_inline uint128 operator()(uint64_t i, uint64_t len = 128) {
 
     assert(len <= 128);
 
@@ -196,7 +196,7 @@ public:
    * - O(log n) otherwise
    *
    */
-  always_inline uint64_t LCE(uint64_t i, uint64_t j) {
+  xssr_always_inline uint64_t LCE(uint64_t i, uint64_t j) {
 
     assert(i < n);
     assert(j < n);
@@ -245,7 +245,7 @@ public:
    * can be provided for more efficiency
    *
    */
-  always_inline bool equals(
+  xssr_always_inline bool equals(
       uint64_t i, uint64_t j, uint64_t l, uint128 i_fp = q, uint128 j_fp = q) {
 
     assert(i + l - 1 < n);
@@ -260,7 +260,7 @@ public:
   /*
    * O(n)-time implementation of LCE
    */
-  always_inline uint64_t LCE_naive(uint64_t i, uint64_t j) {
+  xssr_always_inline uint64_t LCE_naive(uint64_t i, uint64_t j) {
 
     if (i == j)
       return n - i;
@@ -274,19 +274,19 @@ public:
     return lce;
   }
 
-  always_inline uint64_t number_of_blocks() {
+  xssr_always_inline uint64_t number_of_blocks() {
     return Q1.size();
   }
 
-  always_inline uint64_t block_size() {
+  xssr_always_inline uint64_t block_size() {
     return w;
   }
 
-  always_inline uint64_t length() {
+  xssr_always_inline uint64_t length() {
     return n;
   }
 
-  always_inline uint64_t size() {
+  xssr_always_inline uint64_t size() {
     return n;
   }
 
@@ -295,7 +295,7 @@ private:
    * rabin-karp fingerprint of T[0,...,i]
    *
    */
-  always_inline uint128 RK(uint64_t i) {
+  xssr_always_inline uint128 RK(uint64_t i) {
 
     auto j = i / w;
 
@@ -311,7 +311,7 @@ private:
    * for efficiency, rki=RK(i-1) can be specified as input
    *
    */
-  always_inline uint128 RK(uint64_t i, uint64_t j, uint128 rki = q) {
+  xssr_always_inline uint128 RK(uint64_t i, uint64_t j, uint128 rki = q) {
 
     assert(j >= i);
 
@@ -331,7 +331,7 @@ private:
    * complexity: O(log m)
    *
    */
-  always_inline uint128 P1(uint64_t i) {
+  xssr_always_inline uint128 P1(uint64_t i) {
 
     // if there are no full blocks, speed up computation of P'[i]
 
@@ -353,7 +353,7 @@ private:
    * complexity: O(log m)
    *
    */
-  always_inline uint128 B(uint64_t i) {
+  xssr_always_inline uint128 B(uint64_t i) {
 
     assert(i < Q1.size());
 
@@ -379,7 +379,7 @@ private:
    * complexity: O(log n) (a binary search)
    *
    */
-  always_inline uint64_t LCE_binary(uint64_t i, uint64_t j) {
+  xssr_always_inline uint64_t LCE_binary(uint64_t i, uint64_t j) {
 
     assert(i != j);
 
@@ -439,102 +439,102 @@ private:
       sc_iterator(sc_iterator const&) = default;
 
       // iterator to index number
-      always_inline operator uint64_t() {
+      xssr_always_inline operator uint64_t() {
         return _index;
       }
 
       sc_iterator& operator=(sc_iterator const&) = default;
 
       // Iterator
-      always_inline bool operator*() const {
+      xssr_always_inline bool operator*() const {
         return (*_sci)[_index];
       }
 
-      always_inline sc_iterator& operator++() {
+      xssr_always_inline sc_iterator& operator++() {
         ++_index;
         return *this;
       }
 
       // EqualityComparable
-      always_inline bool operator==(sc_iterator it) const {
+      xssr_always_inline bool operator==(sc_iterator it) const {
         return _index == it._index;
       }
 
       // ForwardIterator
-      always_inline bool operator!=(sc_iterator it) const {
+      xssr_always_inline bool operator!=(sc_iterator it) const {
         return _index != it._index;
       }
 
-      always_inline sc_iterator operator++(int) {
+      xssr_always_inline sc_iterator operator++(int) {
         sc_iterator it(*this);
         ++_index;
         return it;
       }
 
       // BidirectionalIterator
-      always_inline sc_iterator& operator--() {
+      xssr_always_inline sc_iterator& operator--() {
         --_index;
         return *this;
       }
 
-      always_inline sc_iterator operator--(int) {
+      xssr_always_inline sc_iterator operator--(int) {
         sc_iterator it(*this);
         --_index;
         return it;
       }
 
       // RandomAccessIterator
-      always_inline sc_iterator& operator+=(uint64_t n) {
+      xssr_always_inline sc_iterator& operator+=(uint64_t n) {
         _index += n;
         return *this;
       }
 
-      always_inline sc_iterator operator+(uint64_t n) const {
+      xssr_always_inline sc_iterator operator+(uint64_t n) const {
         sc_iterator it(*this);
         it += n;
         return it;
       }
 
-      always_inline friend sc_iterator operator+(uint64_t n, sc_iterator it) {
+      xssr_always_inline friend sc_iterator operator+(uint64_t n, sc_iterator it) {
         return it + n;
       }
 
-      always_inline sc_iterator& operator-=(uint64_t n) {
+      xssr_always_inline sc_iterator& operator-=(uint64_t n) {
         _index -= n;
         return *this;
       }
 
-      always_inline sc_iterator operator-(uint64_t n) const {
+      xssr_always_inline sc_iterator operator-(uint64_t n) const {
         sc_iterator it(*this);
         it -= n;
         return it;
       }
 
-      always_inline friend sc_iterator operator-(uint64_t n, sc_iterator it) {
+      xssr_always_inline friend sc_iterator operator-(uint64_t n, sc_iterator it) {
         return it - n;
       }
 
-      always_inline uint64_t operator-(sc_iterator it) {
+      xssr_always_inline uint64_t operator-(sc_iterator it) {
         return uint64_t(_index) - uint64_t(it._index);
       }
 
-      always_inline bool operator[](uint64_t i) const {
+      xssr_always_inline bool operator[](uint64_t i) const {
         return (*_sci)[_index + i];
       }
 
-      always_inline bool operator<(sc_iterator it) const {
+      xssr_always_inline bool operator<(sc_iterator it) const {
         return _index < it._index;
       }
 
-      always_inline bool operator<=(sc_iterator it) const {
+      xssr_always_inline bool operator<=(sc_iterator it) const {
         return _index <= it._index;
       }
 
-      always_inline bool operator>(sc_iterator it) const {
+      xssr_always_inline bool operator>(sc_iterator it) const {
         return _index > it._index;
       }
 
-      always_inline bool operator>=(sc_iterator it) const {
+      xssr_always_inline bool operator>=(sc_iterator it) const {
         return _index >= it._index;
       }
     };
@@ -573,11 +573,11 @@ private:
       n = (T->size() - j) + 2;
     }
 
-    always_inline uint64_t size() {
+    xssr_always_inline uint64_t size() {
       return n;
     }
 
-    always_inline bool operator[](uint64_t t) {
+    xssr_always_inline bool operator[](uint64_t t) {
 
       assert(t < n);
 
@@ -592,10 +592,10 @@ private:
       return not T->equals(i, j, t, i_fp, j_fp);
     }
 
-    always_inline sc_iterator begin() {
+    xssr_always_inline sc_iterator begin() {
       return sc_iterator(this, 0);
     }
-    always_inline sc_iterator end() {
+    xssr_always_inline sc_iterator end() {
       return sc_iterator(this, n);
     }
 

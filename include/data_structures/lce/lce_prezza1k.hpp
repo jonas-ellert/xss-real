@@ -31,11 +31,11 @@ public:
     rklce::rk_lce rk_lce_;
     lce(const value_type* text, const uint64_t n)
         : text_(text), rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t l = 0;
-      while (text_[i + l] == text_[j + l] && likely(l < 1000))
+      while (text_[i + l] == text_[j + l] && xssr_likely(l < 1000))
         ++l;
-      return likely(text_[i + l] != text_[j + l])
+      return xssr_likely(text_[i + l] != text_[j + l])
                  ? l
                  : (l + rk_lce_.LCE(i + l, j + l));
     }
@@ -46,17 +46,17 @@ public:
     lce rk_lce_;
     suffix_compare(const value_type* text, const uint64_t n)
         : text_(text), rk_lce_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       uint64_t lce = rk_lce_(i, j);
       return text_[i + lce] < text_[j + lce];
     }
   };
 
-  always_inline static lce get_lce(const value_type* text, const uint64_t n) {
+  xssr_always_inline static lce get_lce(const value_type* text, const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare get_suffix_compare(const value_type* text,
+  xssr_always_inline static suffix_compare get_suffix_compare(const value_type* text,
                                                          const uint64_t n) {
     return suffix_compare(text, n);
   }

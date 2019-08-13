@@ -41,15 +41,15 @@ private:
 
   uint64_t top_lcp_;
 
-  always_inline bool is_absolute_value(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_absolute_value(const uint64_t l1, const uint64_t l2) {
     return (l1 < l2 && delta_ <= l1);
   }
 
-  always_inline bool is_relative_value(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_relative_value(const uint64_t l1, const uint64_t l2) {
     return (l1 >= l2 && delta_ <= (l1 - l2));
   }
 
-  always_inline bool is_transformable(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_transformable(const uint64_t l1, const uint64_t l2) {
     return is_absolute_value(l1, l2) || is_relative_value(l1, l2);
   }
 
@@ -73,7 +73,7 @@ public:
     }
   }
 
-  always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
     indices_.push(idx);
     if (is_absolute_value(top_lcp_, lcp)) {
       lcps_.push(top_lcp_ >> log2_delta_);
@@ -85,14 +85,14 @@ public:
     top_lcp_ = lcp;
   }
 
-  always_inline void push_without_lcp(const uint64_t idx) {
+  xssr_always_inline void push_without_lcp(const uint64_t idx) {
     indices_.push(idx);
   }
 
-  always_inline void pop_with_lcp() {
+  xssr_always_inline void pop_with_lcp() {
     indices_.pop();
     const uint64_t idx_2 = indices_.top();
-    if (unlikely(idx_2 == 0)) {
+    if (xssr_unlikely(idx_2 == 0)) {
       if (v_stack_size_ > 0) {
         lcps_.pop();
         --v_stack_size_;
@@ -115,21 +115,21 @@ public:
         break;
       }
     }
-    if (likely(idx_2 + top_lcp_ < n_))
+    if (xssr_likely(idx_2 + top_lcp_ < n_))
       for (uint64_t i = 0; i < delta_; ++i) {
         if (text_[idx_1 + top_lcp_ + i] != text_[idx_2 + top_lcp_ + i]) {
           result = std::min((top_lcp_ + i), result);
           break;
         }
       }
-    if (likely(idx_2 + transform < n_))
+    if (xssr_likely(idx_2 + transform < n_))
       for (uint64_t i = 0; i < delta_; ++i) {
         if (text_[idx_1 + transform + i] != text_[idx_2 + transform + i]) {
           result = std::min((transform + i), result);
           break;
         }
       }
-    if (likely(idx_2 + top_lcp_ + transform < n_))
+    if (xssr_likely(idx_2 + top_lcp_ + transform < n_))
       for (uint64_t i = 0; i < delta_; ++i) {
         if (text_[idx_1 + transform + top_lcp_ + i] !=
             text_[idx_2 + transform + top_lcp_ + i]) {
@@ -145,15 +145,15 @@ public:
     top_lcp_ = result;
   }
 
-  always_inline void pop_without_lcp() {
+  xssr_always_inline void pop_without_lcp() {
     indices_.pop();
   }
 
-  always_inline uint64_t top_idx() const {
+  xssr_always_inline uint64_t top_idx() const {
     return indices_.top();
   }
 
-  always_inline uint64_t top_lcp() const {
+  xssr_always_inline uint64_t top_lcp() const {
     return top_lcp_;
   }
 

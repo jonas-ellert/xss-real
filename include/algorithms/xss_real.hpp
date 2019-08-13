@@ -93,7 +93,7 @@ private:
           ctx.close();
         }
 
-        if (unlikely(next_lcp == lcp)) {
+        if (xssr_unlikely(next_lcp == lcp)) {
           lcp = get_lcp(ctx.top_idx(), i, lcp);
           gamma = lcp;
           j = ctx.top_idx();
@@ -105,13 +105,13 @@ private:
       ctx.push_with_lcp(i, lcp);
       ctx.open();
 
-      if (unlikely(gamma >= active_threshold)) {
+      if (xssr_unlikely(gamma >= active_threshold)) {
         const uint64_t distance = i - j;
         bool suffix_j_smaller_i = text[j + gamma] < text[i + gamma];
 
         // EXTEND RUN -- EXTEND RUN -- EXTEND RUN -- EXTEND RUN -- EXTEND RUN --
         // END RUN -- EXTEND RUN -- EXTEND RUN -- EXTEND RUN -- EXTEND RUN -- EX
-        if (unlikely(gamma >= 2 * distance)) {
+        if (xssr_unlikely(gamma >= 2 * distance)) {
           const uint64_t period = distance;
           const uint64_t repetitions = gamma / period - 1;
           // INCREASING RUN
@@ -151,7 +151,7 @@ private:
             const uint64_t period = duval.first;
             const auto repetition_eq = [&](const uint64_t l, const uint64_t r) {
               for (uint64_t k = 0; k < period; ++k)
-                if (unlikely(gamma_str[l + k] != gamma_str[r + k]))
+                if (xssr_unlikely(gamma_str[l + k] != gamma_str[r + k]))
                   return false;
               return true;
             };

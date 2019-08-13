@@ -30,7 +30,7 @@ public:
   struct lce {
     LcePrezza prezza_;
     lce(vt* text, const uint64_t n) : prezza_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       return prezza_.lce(i, j);
     }
 
@@ -42,7 +42,7 @@ public:
   struct suffix_compare {
     LcePrezza prezza_;
     suffix_compare(vt* text, const uint64_t n) : prezza_(text, n) {}
-    always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
+    xssr_always_inline uint64_t operator()(const uint64_t i, const uint64_t j) {
       return prezza_.isSmallerSuffix(i, j);
     }
 
@@ -50,12 +50,12 @@ public:
     suffix_compare& operator=(const suffix_compare&) = delete;
   };
 
-  always_inline static lce<value_type> get_lce(value_type* text,
+  xssr_always_inline static lce<value_type> get_lce(value_type* text,
                                                const uint64_t n) {
     return lce(text, n);
   }
 
-  always_inline static suffix_compare<value_type>
+  xssr_always_inline static suffix_compare<value_type>
   get_suffix_compare(value_type* text, const uint64_t n) {
     return suffix_compare(text, n);
   }

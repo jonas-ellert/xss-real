@@ -25,9 +25,9 @@
 #include <string>
 #include <vector>
 
-#define always_inline __attribute__((always_inline)) inline
-#define likely(x) __builtin_expect(!!(x), 1)
-#define unlikely(x) __builtin_expect(!!(x), 0)
+#define xssr_always_inline __attribute__((always_inline)) inline
+#define xssr_likely(x) __builtin_expect(!!(x), 1)
+#define xssr_unlikely(x) __builtin_expect(!!(x), 0)
 
 constexpr static uint64_t word_all_zero = 0ULL;
 constexpr static uint64_t word_all_one = ~word_all_zero;
@@ -37,42 +37,42 @@ constexpr static uint64_t word_right_zero = word_all_one << 1;
 constexpr static uint64_t word_right_one = ~word_right_zero;
 
 template <uint64_t power_of_two>
-constexpr always_inline static uint64_t div(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t div(const uint64_t value) {
   static_assert(__builtin_ctzl(power_of_two) < 64);
   static_assert((1ULL << __builtin_ctzl(power_of_two)) == power_of_two);
   return value >> __builtin_ctzl(power_of_two);
 }
 
 template <uint64_t power_of_two>
-constexpr always_inline static uint64_t mul(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t mul(const uint64_t value) {
   static_assert(__builtin_ctzl(power_of_two) < 64);
   static_assert((1ULL << __builtin_ctzl(power_of_two)) == power_of_two);
   return value << __builtin_ctzl(power_of_two);
 }
 
 template <uint64_t power_of_two>
-constexpr always_inline static uint64_t mod(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t mod(const uint64_t value) {
   static_assert(__builtin_ctzl(power_of_two) < 64);
   static_assert((1ULL << __builtin_ctzl(power_of_two)) == power_of_two);
   return value - mul<power_of_two>(div<power_of_two>(value));
 }
 
-constexpr always_inline static uint64_t div64(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t div64(const uint64_t value) {
   return div<64>(value);
 }
 
-constexpr always_inline static uint64_t mul64(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t mul64(const uint64_t value) {
   return mul<64>(value);
 }
 
-constexpr always_inline static uint64_t div8(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t div8(const uint64_t value) {
   return div<8>(value);
 }
 
-constexpr always_inline static uint64_t mul8(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t mul8(const uint64_t value) {
   return mul<8>(value);
 }
 
-constexpr always_inline static uint64_t mod64(const uint64_t value) {
+constexpr xssr_always_inline static uint64_t mod64(const uint64_t value) {
   return mod<64>(value);
 }
