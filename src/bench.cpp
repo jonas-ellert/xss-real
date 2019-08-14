@@ -120,6 +120,10 @@ int32_t run(const std::vector<char_t>& vector, const std::string name) {
       run_pss_real(vector, runs, additional_info);
     }
 
+    if (s.matches("nss-pss-real") || s.matches("nss-pss-real-array")) {
+      run_nss_pss_real(vector, runs, additional_info);
+    }
+
     if (s.matches("lyndon-real") || s.matches("lyndon-real-array")) {
       run_lyndon_real(vector, runs, additional_info);
     }
