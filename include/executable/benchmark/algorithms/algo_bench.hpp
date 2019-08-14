@@ -374,6 +374,16 @@ void run_nss_real(const std::vector<char_t>& vector,
                                      vector.size() - 2, runs);
 }
 
+template <typename char_t>
+void run_lyndon_real(const std::vector<char_t>& vector,
+                  const uint64_t runs,
+                  const std::string additional_info) {
+  const auto func = [&]() { nss_real::lyndon(vector.data(), vector.size()); };
+
+  run_generic<output_types::array32>("lyndon-real", additional_info, func,
+                                     vector.size() - 2, runs);
+}
+
 template <stack_strategy alloc, typename ctz_type, typename char_t>
 void run_xss_bps_lcp(const std::vector<char_t>& vector,
                      const uint64_t delta,
