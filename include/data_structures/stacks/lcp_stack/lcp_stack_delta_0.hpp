@@ -44,7 +44,8 @@ public:
     static_assert(strategy == STATIC || strategy == DYNAMIC);
   }
 
-  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx,
+                                        const uint64_t lcp) {
     indices_.push(idx);
     // add +1 to allow zeros
     if (lcp <= top_lcp_) {

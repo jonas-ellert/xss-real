@@ -45,12 +45,13 @@ public:
     }
   };
 
-  xssr_always_inline static lce get_lce(const value_type* text, const uint64_t n) {
+  xssr_always_inline static lce get_lce(const value_type* text,
+                                        const uint64_t n) {
     return lce(text, n);
   }
 
-  xssr_always_inline static suffix_compare get_suffix_compare(const value_type* text,
-                                                         const uint64_t n) {
+  xssr_always_inline static suffix_compare
+  get_suffix_compare(const value_type* text, const uint64_t n) {
     return suffix_compare(text, n);
   }
 

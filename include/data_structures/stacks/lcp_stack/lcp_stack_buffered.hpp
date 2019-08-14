@@ -64,7 +64,8 @@ public:
     return lcps_.back();
   }
 
-  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx,
+                                        const uint64_t lcp) {
     indices_.push_back(idx);
     lcps_.push_back(lcp);
     if (xssr_unlikely(indices_.size() == buffer_size_)) {

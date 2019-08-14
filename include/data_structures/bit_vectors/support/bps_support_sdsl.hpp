@@ -57,7 +57,8 @@ public:
     return (bps_idx_close_nss - bps_idx + 1) >> 1;
   }
 
-  xssr_always_inline uint64_t previous_value(const uint64_t preorder_number) const {
+  xssr_always_inline uint64_t
+  previous_value(const uint64_t preorder_number) const {
     const uint64_t bps_idx_open_node = sada_.select(preorder_number + 2);
     const uint64_t parent_dist = parent_distance(bps_idx_open_node);
     return preorder_number - parent_dist;

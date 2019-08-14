@@ -39,7 +39,8 @@ public:
     //    lcps_.push(0);
   }
 
-  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx,
+                                        const uint64_t lcp) {
     indices_.push(idx);
     lcps_.push(lcp);
   }

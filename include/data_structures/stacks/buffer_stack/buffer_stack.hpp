@@ -58,7 +58,8 @@ private:
   uint64_t* back_mem_;
   uint64_t back_idx_;
 
-  xssr_always_inline uint64_t get_max_buffer_blocks(const uint64_t number_of_bits) {
+  xssr_always_inline uint64_t
+  get_max_buffer_blocks(const uint64_t number_of_bits) {
     const uint64_t blocks =
         (number_of_bits + block_size_bits - 1) / block_size_bits;
     return (((blocks + 1) >> 1) << 1);

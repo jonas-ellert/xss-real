@@ -51,7 +51,7 @@ public:
   };
 
   xssr_always_inline static lce<value_type> get_lce(value_type* text,
-                                               const uint64_t n) {
+                                                    const uint64_t n) {
     return lce(text, n);
   }
 

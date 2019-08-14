@@ -39,10 +39,10 @@ public:
     }
 
     xssr_always_inline void get_stats(uint64_t& cnt,
-                                 uint64_t& sum,
-                                 uint64_t& min,
-                                 uint64_t& max,
-                                 double& average) {
+                                      uint64_t& sum,
+                                      uint64_t& min,
+                                      uint64_t& max,
+                                      double& average) {
       get_base_stats(cnt, sum, min, max);
       average = ((double) sum) / cnt;
     }
@@ -174,12 +174,13 @@ public:
     }
   };
 
-  xssr_always_inline static lce get_lce(const value_type* text, const uint64_t n) {
+  xssr_always_inline static lce get_lce(const value_type* text,
+                                        const uint64_t n) {
     return lce(text, n);
   }
 
-  xssr_always_inline static suffix_compare get_suffix_compare(const value_type* text,
-                                                         const uint64_t n) {
+  xssr_always_inline static suffix_compare
+  get_suffix_compare(const value_type* text, const uint64_t n) {
     return suffix_compare(text, n);
   }
 

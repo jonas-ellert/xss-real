@@ -70,7 +70,8 @@ public:
         current_word_size_(0),
         current_word_data_index_(0) {}
 
-  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx,
+                                        const uint64_t lcp) {
     lcp_stack_.push_with_lcp(idx, lcp);
   }
 
@@ -114,7 +115,7 @@ public:
   }
 
   xssr_always_inline void soft_set_word(const uint64_t idx,
-                                   const uint64_t word) const {
+                                        const uint64_t word) const {
     const uint64_t bit_idx = mod64(idx);
     if (xssr_likely(bit_idx > 0)) {
       data_[div64(idx)] |= word >> bit_idx;
@@ -124,7 +125,7 @@ public:
   }
 
   xssr_always_inline void append_copy_unsafe(const uint64_t source,
-                                        const uint64_t length) {
+                                             const uint64_t length) {
     uint64_t dest = current_length();
     for (uint64_t i = 0; i < length; i += 64) {
       soft_set_word(dest + i, bv_.get_word(source + i));
@@ -136,7 +137,8 @@ public:
   }
 
   // length must be at least 64!
-  xssr_always_inline void append_copy(const uint64_t source, const uint64_t length) {
+  xssr_always_inline void append_copy(const uint64_t source,
+                                      const uint64_t length) {
     uint64_t dest = current_length();
     uint64_t distance = dest - source;
     uint64_t start_word = bv_.get_word(source);
@@ -156,7 +158,7 @@ public:
   }
 
   xssr_always_inline void extend_increasing_run(const uint64_t period,
-                                           const uint64_t repetitions) {
+                                                const uint64_t repetitions) {
     const uint64_t copy_length_per_repetition = 2 * period - 1;
     const uint64_t copy_length_total = repetitions * copy_length_per_repetition;
     const uint64_t copy_from = current_length() - copy_length_per_repetition;
@@ -164,7 +166,7 @@ public:
   }
 
   xssr_always_inline void extend_decreasing_run(const uint64_t period,
-                                           const uint64_t repetitions) {
+                                                const uint64_t repetitions) {
     const uint64_t copy_length_per_repetition = 2 * period;
     const uint64_t copy_length_total = repetitions * copy_length_per_repetition;
     const uint64_t copy_from = current_length() - copy_length_per_repetition;

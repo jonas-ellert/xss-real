@@ -41,15 +41,18 @@ private:
 
   uint64_t top_lcp_;
 
-  xssr_always_inline bool is_absolute_value(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_absolute_value(const uint64_t l1,
+                                            const uint64_t l2) {
     return (l1 < l2 && delta_ <= l1);
   }
 
-  xssr_always_inline bool is_relative_value(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_relative_value(const uint64_t l1,
+                                            const uint64_t l2) {
     return (l1 >= l2 && delta_ <= (l1 - l2));
   }
 
-  xssr_always_inline bool is_transformable(const uint64_t l1, const uint64_t l2) {
+  xssr_always_inline bool is_transformable(const uint64_t l1,
+                                           const uint64_t l2) {
     return is_absolute_value(l1, l2) || is_relative_value(l1, l2);
   }
 
@@ -73,7 +76,8 @@ public:
     }
   }
 
-  xssr_always_inline void push_with_lcp(const uint64_t idx, const uint64_t lcp) {
+  xssr_always_inline void push_with_lcp(const uint64_t idx,
+                                        const uint64_t lcp) {
     indices_.push(idx);
     if (is_absolute_value(top_lcp_, lcp)) {
       lcps_.push(top_lcp_ >> log2_delta_);

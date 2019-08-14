@@ -93,7 +93,8 @@ public:
       return data_[div64(idx)];
   }
 
-  xssr_always_inline void set_word(const uint64_t idx, const uint64_t word) const {
+  xssr_always_inline void set_word(const uint64_t idx,
+                                   const uint64_t word) const {
     const uint64_t bit_idx = mod64(idx);
     if (xssr_likely(bit_idx > 0)) {
       data_[div64(idx)] &= word_all_one << (64 - bit_idx);

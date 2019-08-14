@@ -495,7 +495,8 @@ private:
         return it;
       }
 
-      xssr_always_inline friend sc_iterator operator+(uint64_t n, sc_iterator it) {
+      xssr_always_inline friend sc_iterator operator+(uint64_t n,
+                                                      sc_iterator it) {
         return it + n;
       }
 
@@ -510,7 +511,8 @@ private:
         return it;
       }
 
-      xssr_always_inline friend sc_iterator operator-(uint64_t n, sc_iterator it) {
+      xssr_always_inline friend sc_iterator operator-(uint64_t n,
+                                                      sc_iterator it) {
         return it - n;
       }
 
