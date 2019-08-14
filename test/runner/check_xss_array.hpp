@@ -30,22 +30,35 @@ static void check_xss_array(const vec_type &instance) {
   const uint64_t n = instance.size();
   const auto text = instance.data();
 
+  const auto nss_from_isa = nss_isa::run(text, n);
+  const auto pss_from_isa = pss_isa::run(text, n);
+
   using index_type = uint32_t;
   const auto nss_vec = nss_real::nss<index_type>(text, n);
-  const auto nss_from_isa = nss_isa::run(text, n);
   for (uint64_t i = 0; i < n; ++i) {
     if (nss_vec[i] != (index_type)(nss_from_isa[i])) {
       std::cout << "nss[" << i << "] is " << nss_vec[i] << ", but should be " << nss_from_isa[i] << "." << std::endl;
     }
   }
-
   const auto pss_vec = nss_real::pss<index_type>(text, n);
-  const auto pss_from_isa = pss_isa::run(text, n);
   for (uint64_t i = 0; i < n; ++i) {
     if (pss_vec[i] != (index_type)(pss_from_isa[i])) {
       std::cout << "pss[" << i << "] is " << nss_vec[i] << ", but should be " << pss_from_isa[i] << "." << std::endl;
     }
   }
 
+  const auto nss_and_pss_vecs = nss_real::xss(text, n);
+  const auto &nss_vec2 = nss_and_pss_vecs.first;
+  const auto &pss_vec2 = nss_and_pss_vecs.second;
+  for (uint64_t i = 0; i < n; ++i) {
+    if (nss_vec2[i] != (index_type)(nss_from_isa[i])) {
+      std::cout << "nss[" << i << "] is " << nss_vec2[i] << ", but should be " << nss_from_isa[i] << "." << std::endl;
+    }
+  }
+  for (uint64_t i = 0; i < n; ++i) {
+    if (pss_vec2[i] != (index_type)(pss_from_isa[i])) {
+      std::cout << "pss[" << i << "] is " << nss_vec2[i] << ", but should be " << pss_from_isa[i] << "." << std::endl;
+    }
+  }
 //  check_type::check_nss(instance, nss_vec);
 }
