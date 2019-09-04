@@ -22,8 +22,6 @@
 
 #include <omp.h>
 
-#include <data_structures/bit_vectors/support/bps_support_naive.hpp>
-#include <data_structures/bit_vectors/support/bps_support_sdsl.hpp>
 
 template <
     bool abort_on_error,

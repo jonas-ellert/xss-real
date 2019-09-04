@@ -368,9 +368,19 @@ template <typename char_t>
 void run_nss_real(const std::vector<char_t>& vector,
                   const uint64_t runs,
                   const std::string additional_info) {
-  const auto func = [&]() { nss_real::nss(vector.data(), vector.size()); };
+  const auto func = [&]() { nss_real::lce_stack::nss(vector.data(), vector.size()); };
 
   run_generic<output_types::array32>("nss-real", additional_info, func,
+                                     vector.size() - 2, runs);
+}
+
+template <typename char_t>
+void run_nss2_real(const std::vector<char_t>& vector,
+                   const uint64_t runs,
+                   const std::string additional_info) {
+  const auto func = [&]() { nss_real::lce_amortize::nss(vector.data(), vector.size()); };
+
+  run_generic<output_types::array32>("nss-real2", additional_info, func,
                                      vector.size() - 2, runs);
 }
 
@@ -378,19 +388,41 @@ template <typename char_t>
 void run_pss_real(const std::vector<char_t>& vector,
                   const uint64_t runs,
                   const std::string additional_info) {
-  const auto func = [&]() { nss_real::pss(vector.data(), vector.size()); };
+  const auto func = [&]() { nss_real::lce_stack::pss(vector.data(), vector.size()); };
 
   run_generic<output_types::array32>("pss-real", additional_info, func,
                                      vector.size() - 2, runs);
 }
 
 template <typename char_t>
+void run_pss2_real(const std::vector<char_t>& vector,
+                   const uint64_t runs,
+                   const std::string additional_info) {
+  const auto func = [&]() { nss_real::lce_amortize::pss(vector.data(), vector.size()); };
+
+  run_generic<output_types::array32>("pss-real2", additional_info, func,
+                                     vector.size() - 2, runs);
+}
+
+
+
+template <typename char_t>
 void run_nss_pss_real(const std::vector<char_t>& vector,
                       const uint64_t runs,
                       const std::string additional_info) {
-  const auto func = [&]() { nss_real::xss(vector.data(), vector.size()); };
+  const auto func = [&]() { nss_real::lce_stack::xss(vector.data(), vector.size()); };
 
   run_generic<output_types::array64>("nss-pss-real", additional_info, func,
+                                     vector.size() - 2, runs);
+}
+
+template <typename char_t>
+void run_nss_pss2_real(const std::vector<char_t>& vector,
+                      const uint64_t runs,
+                      const std::string additional_info) {
+  const auto func = [&]() { nss_real::lce_stack::xss(vector.data(), vector.size()); };
+
+  run_generic<output_types::array64>("nss-pss-real2", additional_info, func,
                                      vector.size() - 2, runs);
 }
 
@@ -398,9 +430,19 @@ template <typename char_t>
 void run_lyndon_real(const std::vector<char_t>& vector,
                      const uint64_t runs,
                      const std::string additional_info) {
-  const auto func = [&]() { nss_real::lyndon(vector.data(), vector.size()); };
+  const auto func = [&]() { nss_real::lce_stack::lyndon(vector.data(), vector.size()); };
 
   run_generic<output_types::array32>("lyndon-real", additional_info, func,
+                                     vector.size() - 2, runs);
+}
+
+template <typename char_t>
+void run_lyndon2_real(const std::vector<char_t>& vector,
+                     const uint64_t runs,
+                     const std::string additional_info) {
+  const auto func = [&]() { nss_real::lce_amortize::lyndon(vector.data(), vector.size()); };
+
+  run_generic<output_types::array32>("lyndon-real2", additional_info, func,
                                      vector.size() - 2, runs);
 }
 
